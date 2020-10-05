@@ -5,5 +5,7 @@
         <file>NordStyle/qmldir</file>
         <file>NordStyle/Nord.qml</file>
         <file>TopMenu.qml</file>
+        <file>MainWindow.qml</file>
+        <file>StartupWindow.qml</file>
     </qresource>
 </RCC>

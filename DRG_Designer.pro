@@ -25,6 +25,8 @@ RESOURCES += qml.qrc
 TRANSLATIONS += \
     DRG_Designer_en_AS.ts
 
+include($$PWD/QuickQanava/src/quickqanava.pri)
+
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
@@ -41,3 +43,5 @@ HEADERS += \
     drgbrowsermodel.h \
     drgchapter.h \
     icd11.h
+
+SUBDIRS += \
