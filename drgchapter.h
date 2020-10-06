@@ -1,8 +1,9 @@
 #ifndef DRGCHAPTER_H
 #define DRGCHAPTER_H
 
+#include "treeitem.h"
 
-class DRGChapter
+class DRGChapter : public TreeItem
 {
 public:
     DRGChapter();

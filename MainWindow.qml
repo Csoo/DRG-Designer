@@ -116,6 +116,7 @@ Item {
         anchors.leftMargin: 0
         anchors.bottomMargin: 0
         anchors.topMargin: 30
+        model: treeModel
         headerDelegate: Rectangle {
             width: 60
             height: 30
@@ -126,10 +127,14 @@ Item {
             Text {text: styleData.value ; elide: Text.ElideLeft; anchors.fill: parent;horizontalAlignment: Text.AlignLeft;verticalAlignment: Text.AlignTop ;minimumPixelSize: 5}
         }
         QQC1.TableViewColumn {
-            title: "Name"
+            role: "code"
+            title: "Code"
+            width: 50
         }
         QQC1.TableViewColumn {
-            title: "Permissions"
+            role: "title"
+            title: "Title"
+            width: 50
         }
 
         MouseArea {

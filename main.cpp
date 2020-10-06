@@ -2,6 +2,8 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include "QuickQanava.h"
+#include "drgbrowsermodel.h"
+#include "testmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,10 +11,12 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     QQuickStyle::setStyle("Universal");
+    TestModel model;
 
     QQmlApplicationEngine engine;
     engine.addPluginPath(QStringLiteral("QuickQanava/src"));
     QuickQanava::initialize(&engine);
+    engine.rootContext()->setContextProperty("treeModel",&model);
     qmlRegisterType<qan::Graph>("MyGraph",1,0,"CustomGraph");
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

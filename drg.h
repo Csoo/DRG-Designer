@@ -1,8 +1,9 @@
 #ifndef DRG_H
 #define DRG_H
 
+#include "treeitem.h"
 
-class DRG
+class DRG : public TreeItem
 {
 public:
     DRG();
