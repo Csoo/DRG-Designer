@@ -16,7 +16,19 @@ TreeItem::~TreeItem()
 
 void TreeItem::appendChild(TreeItem *item)
 {
+    item->setParentItem(this);
     m_childItems.append(item);
+}
+
+bool TreeItem::removeChildren(int from, int count)
+{
+    if (from < 0 || from + count > m_childItems.size())
+        return false;
+
+    for (int row = 0; row < count; ++row)
+        delete m_childItems.takeAt(from);
+
+    return true;
 }
 
 TreeItem *TreeItem::child(int row)
@@ -59,9 +71,6 @@ void TreeItem::setTitle(const QString &value)
 
 QVariant TreeItem::data(int index) const
 {
-    if (index < 0 || index > 1)
-        return -1;
-
     switch (index)
     {
         case 0: return code;
@@ -79,4 +88,9 @@ QString TreeItem::getCode() const
 void TreeItem::setCode(const QString &value)
 {
     code = value;
+}
+
+void TreeItem::setParentItem(TreeItem *parentItem)
+{
+    m_parentItem = parentItem;
 }

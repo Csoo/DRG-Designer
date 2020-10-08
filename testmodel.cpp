@@ -1,4 +1,5 @@
 #include "testmodel.h"
+#include <QtDebug>
 
 TestModel::TestModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -9,8 +10,17 @@ TestModel::TestModel(QObject *parent)
     rootItem->setCode("TEST2");
     rootItem->setTitle("TITLE2");
 
-    rootItem->appendChild(new TreeItem("asd","asd",rootItem));
     setUpModel();
+}
+
+TreeItem *TestModel::getItem(const QModelIndex &index) const
+{
+    if (index.isValid()) {
+        TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+        if (item)
+            return item;
+    }
+    return rootItem;
 }
 
 QVariant TestModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -89,7 +99,8 @@ int TestModel::columnCount(const QModelIndex &parent) const
 
 bool TestModel::hasChildren(const QModelIndex &parent) const
 {
-    // FIXME: Implement me!
+    TreeItem *parentItem = this->getItem(parent);
+    return parentItem->childCount() > 0;
 }
 
 bool TestModel::canFetchMore(const QModelIndex &parent) const
@@ -137,7 +148,6 @@ Qt::ItemFlags TestModel::flags(const QModelIndex &index) const
 bool TestModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     beginInsertRows(parent, row, row + count - 1);
-    // FIXME: Implement me!
     endInsertRows();
 }
 
@@ -150,9 +160,15 @@ bool TestModel::insertColumns(int column, int count, const QModelIndex &parent)
 
 bool TestModel::removeRows(int row, int count, const QModelIndex &parent)
 {
+    bool ok = false;
+    TreeItem *parentItem = this->getItem(parent);
+    if (!parentItem)
+        return ok;
+
     beginRemoveRows(parent, row, row + count - 1);
-    // FIXME: Implement me!
+    ok = parentItem->removeChildren(row, count);
     endRemoveRows();
+    return ok;
 }
 
 bool TestModel::removeColumns(int column, int count, const QModelIndex &parent)
@@ -172,5 +188,13 @@ QHash<int, QByteArray> TestModel::roleNames() const
 
 void TestModel::setUpModel()
 {
-
+    TreeItem *Dog = new TreeItem("01","Kutya");
+    TreeItem *newItem = new TreeItem("111", "Puli");
+    Dog->appendChild(newItem);
+    newItem->appendChild(new TreeItem("112", "Gömbi"));
+    newItem->appendChild(new TreeItem("112", "Picur"));
+    rootItem->appendChild(Dog);
+    TreeItem *Cat = new TreeItem("02", "Macska");
+    Cat->appendChild(new TreeItem("111", "Sziami"));
+    rootItem->appendChild(Cat);
 }

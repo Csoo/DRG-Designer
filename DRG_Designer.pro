@@ -1,5 +1,4 @@
-QT += quick quickcontrols2
-
+QT += quick quickcontrols2 qml
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use

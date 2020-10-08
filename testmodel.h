@@ -16,6 +16,7 @@ public:
     };
     explicit TestModel(QObject *parent = nullptr);
 
+    TreeItem *getItem(const QModelIndex &index) const;
     // Header:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 

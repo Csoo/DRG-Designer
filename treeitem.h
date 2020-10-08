@@ -12,6 +12,7 @@ public:
     virtual ~TreeItem();
 
     void appendChild(TreeItem *child);
+    bool removeChildren(int from, int count);
 
     TreeItem *child(int row);
     int childCount() const;
@@ -24,6 +25,8 @@ public:
     void setTitle(const QString &value);
     QString getCode() const;
     void setCode(const QString &value);
+
+    void setParentItem(TreeItem *parentItem);
 
 protected:
     QString code;

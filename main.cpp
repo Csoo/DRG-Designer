@@ -2,7 +2,6 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include "QuickQanava.h"
-#include "drgbrowsermodel.h"
 #include "testmodel.h"
 
 int main(int argc, char *argv[])

@@ -1,11 +1,7 @@
 import QtQuick 2.3
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.4
-import QtQuick.Controls 1.4 as QQC1
 import QtQuick.Controls.Universal 2.3
-import QuickQanava 2.0 as Qua
-import "qrc:/QuickQanava" as Qan
-import MyGraph 1.0
 import "./NordStyle"
 
 Item {
@@ -24,41 +20,14 @@ Item {
             anchors.fill: parent
             interactive: false
             currentIndex: tabBar.currentIndex
+
             Item {
                 id: editor
-                CustomGraph {
-                    id: graph
-                    anchors.fill: parent
-                    Component.onCompleted: {
-                        var n1 = graph.insertNode()
-                        n1.label = "Hello World"
-                    }
-                }
-
+                Editor {}
             }
             Item {
-                id: graphs
-                Text {
-                    id: asd
-                    x: 231
-                    y: 168
-                    text: qsTr("HELLLO")
-                }
-
-                RadioButton {
-                    id: radioButton
-                    x: 403
-                    y: 120
-                    text: qsTr("Radio Button")
-                }
-
-                RadioButton {
-                    id: radioButton1
-                    x: 403
-                    y: 168
-                    text: qsTr("Radio Button")
-                }
-
+                id: graph
+                ICD11Graph {}
             }
         }
 
@@ -105,38 +74,14 @@ Item {
         }
     }
 
-    QQC1.TreeView {
-        property int maxWidth: 800
-        property int minWidth: 150
+    DRGBrowser {
         id: treeView
-        width: 200
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.leftMargin: 0
         anchors.bottomMargin: 0
         anchors.topMargin: 30
-        model: treeModel
-        headerDelegate: Rectangle {
-            width: 60
-            height: 30
-            color: "#f21111"
-            radius: 1
-            border.color: "#0052d9"
-            border.width: 2
-            Text {text: styleData.value ; elide: Text.ElideLeft; anchors.fill: parent;horizontalAlignment: Text.AlignLeft;verticalAlignment: Text.AlignTop ;minimumPixelSize: 5}
-        }
-        QQC1.TableViewColumn {
-            role: "code"
-            title: "Code"
-            width: 50
-        }
-        QQC1.TableViewColumn {
-            role: "title"
-            title: "Title"
-            width: 50
-        }
-
         MouseArea {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
@@ -166,6 +111,7 @@ Item {
             cursorShape: containsMouse ? Qt.SplitHCursor : Qt.ArrowCursor
         }
     }
+
 }
 
 /*##^##
