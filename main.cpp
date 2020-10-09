@@ -2,15 +2,17 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include "QuickQanava.h"
-#include "testmodel.h"
+#include "drgbrowsermodel.h"
+#include "drgchapter.h"
 
 int main(int argc, char *argv[])
 {
+    DRGChapter chap1;
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
     QQuickStyle::setStyle("Universal");
-    TestModel model;
+    DRGBrowserModel model;
 
     QQmlApplicationEngine engine;
     engine.addPluginPath(QStringLiteral("QuickQanava/src"));

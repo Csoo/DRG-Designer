@@ -1,51 +1,29 @@
 #include "drgbrowsermodel.h"
+#include <QtDebug>
 
-DrgBrowserModel::DrgBrowserModel(const QString &data, QObject *parent)
+DRGBrowserModel::DRGBrowserModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    m_roleNameMapping[CodeRole] = "code";
-    m_roleNameMapping[TitleRole] = "title";
 
-    rootItem = new TreeItem("Code","Title");
-    setupModelData(data);
+    rootItem = new TreeItem;
+
+    rootItem->setCode("TEST2");
+    rootItem->setTitle("TITLE2");
+
+    setUpModel();
 }
 
-DrgBrowserModel::~DrgBrowserModel()
+TreeItem *DRGBrowserModel::getItem(const QModelIndex &index) const
 {
-    delete rootItem;
+    if (index.isValid()) {
+        TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+        if (item)
+            return item;
+    }
+    return rootItem;
 }
 
-int DrgBrowserModel::columnCount(const QModelIndex &parent) const
-{
-    if (parent.isValid())
-        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-    else
-        return rootItem->columnCount();
-}
-
-QVariant DrgBrowserModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    if (role != CodeRole && role != TitleRole)
-        return QVariant();
-
-    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
-
-    return item->data(role - Qt::UserRole - 1);
-}
-
-Qt::ItemFlags DrgBrowserModel::flags(const QModelIndex &index) const
-{
-    if (!index.isValid())
-        return 0;
-
-    return QAbstractItemModel::flags(index);
-}
-
-QVariant DrgBrowserModel::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+QVariant DRGBrowserModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
         return rootItem->data(section);
@@ -53,8 +31,18 @@ QVariant DrgBrowserModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-QModelIndex DrgBrowserModel::index(int row, int column, const QModelIndex &parent)
-            const
+bool DRGBrowserModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
+{
+    if (value != headerData(section, orientation, role)) {
+        rootItem->setCode("TEST");
+        rootItem->setTitle("TITLE");
+        emit headerDataChanged(orientation, section, section);
+        return true;
+    }
+    return false;
+}
+
+QModelIndex DRGBrowserModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent))
         return QModelIndex();
@@ -73,7 +61,7 @@ QModelIndex DrgBrowserModel::index(int row, int column, const QModelIndex &paren
         return QModelIndex();
 }
 
-QModelIndex DrgBrowserModel::parent(const QModelIndex &index) const
+QModelIndex DRGBrowserModel::parent(const QModelIndex &index) const
 {
     if (!index.isValid())
         return QModelIndex();
@@ -87,7 +75,7 @@ QModelIndex DrgBrowserModel::parent(const QModelIndex &index) const
     return createIndex(parentItem->row(), 0, parentItem);
 }
 
-int DrgBrowserModel::rowCount(const QModelIndex &parent) const
+int DRGBrowserModel::rowCount(const QModelIndex &parent) const
 {
     TreeItem *parentItem;
     if (parent.column() > 0)
@@ -101,14 +89,112 @@ int DrgBrowserModel::rowCount(const QModelIndex &parent) const
     return parentItem->childCount();
 }
 
-QHash<int, QByteArray> DrgBrowserModel::roleNames() const
+int DRGBrowserModel::columnCount(const QModelIndex &parent) const
 {
-    return m_roleNameMapping;
+    if (parent.isValid())
+        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+    else
+        return rootItem->columnCount();
 }
 
-void DrgBrowserModel::setupModelData(QVariant data)
+bool DRGBrowserModel::hasChildren(const QModelIndex &parent) const
 {
-    TreeItem newItem("ADS", "Kutya");
-    newItem.appendChild(new TreeItem("2dsa","Puli"));
-    rootItem->appendChild(new TreeItem("ADS", "Kutya"));
+    TreeItem *parentItem = this->getItem(parent);
+    return parentItem->childCount() > 0;
+}
+
+bool DRGBrowserModel::canFetchMore(const QModelIndex &parent) const
+{
+    // FIXME: Implement me!
+    return false;
+}
+
+void DRGBrowserModel::fetchMore(const QModelIndex &parent)
+{
+    // FIXME: Implement me!
+}
+
+QVariant DRGBrowserModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
+
+    if (role != CodeRole && role != TitleRole)
+        return QVariant();
+
+    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+
+    return item->data(role - Qt::UserRole - 1);
+}
+
+bool DRGBrowserModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (data(index, role) != value) {
+        // FIXME: Implement me!
+        emit dataChanged(index, index, QVector<int>() << role);
+        return true;
+    }
+    return false;
+}
+
+Qt::ItemFlags DRGBrowserModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return Qt::NoItemFlags;
+
+    return QAbstractItemModel::flags(index);
+}
+
+bool DRGBrowserModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    beginInsertRows(parent, row, row + count - 1);
+    endInsertRows();
+}
+
+bool DRGBrowserModel::insertColumns(int column, int count, const QModelIndex &parent)
+{
+    beginInsertColumns(parent, column, column + count - 1);
+    // FIXME: Implement me!
+    endInsertColumns();
+}
+
+bool DRGBrowserModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    bool ok = false;
+    TreeItem *parentItem = this->getItem(parent);
+    if (!parentItem)
+        return ok;
+
+    beginRemoveRows(parent, row, row + count - 1);
+    ok = parentItem->removeChildren(row, count);
+    endRemoveRows();
+    return ok;
+}
+
+bool DRGBrowserModel::removeColumns(int column, int count, const QModelIndex &parent)
+{
+    beginRemoveColumns(parent, column, column + count - 1);
+    // FIXME: Implement me!
+    endRemoveColumns();
+}
+
+QHash<int, QByteArray> DRGBrowserModel::roleNames() const
+{
+    QHash<int, QByteArray> names;
+    names[CodeRole] = "code";
+    names[TitleRole] = "title";
+    return names;
+}
+
+void DRGBrowserModel::setUpModel()
+{
+    TreeItem *Dog = new TreeItem("01","Kutya");
+    TreeItem *newItem = new TreeItem("111", "Puli");
+    Dog->appendChild(newItem);
+    newItem->appendChild(new TreeItem("112", "Gömbi"));
+    newItem->appendChild(new TreeItem("112", "Picur"));
+    rootItem->appendChild(Dog);
+    TreeItem *Cat = new TreeItem("02", "Macska");
+    Cat->appendChild(new TreeItem("111", "Sziami"));
+    rootItem->appendChild(Cat);
 }

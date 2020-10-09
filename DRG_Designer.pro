@@ -18,7 +18,6 @@ SOURCES += \
         drgchapter.cpp \
         icd11.cpp \
         main.cpp \
-        testmodel.cpp \
         treeitem.cpp
 
 RESOURCES += qml.qrc
@@ -44,7 +43,6 @@ HEADERS += \
     drgbrowsermodel.h \
     drgchapter.h \
     icd11.h \
-    testmodel.h \
     treeitem.h
 
 SUBDIRS += \

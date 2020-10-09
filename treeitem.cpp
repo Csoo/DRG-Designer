@@ -1,10 +1,10 @@
 #include "treeitem.h"
 #include <QStringList>
 
-TreeItem::TreeItem(const QString &code, const QString &title, TreeItem *parent):
+TreeItem::TreeItem(const QString &code, const QString &title, TreeItem *parentItem):
     code(code),
     title(title),
-    m_parentItem(parent)
+    m_parentItem(parentItem)
 {
 
 }

@@ -31,8 +31,6 @@ public:
 protected:
     QString code;
     QString title;
-
-private:
     QList<TreeItem*> m_childItems;
     TreeItem *m_parentItem;
 };
