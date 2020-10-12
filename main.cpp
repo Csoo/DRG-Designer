@@ -4,20 +4,26 @@
 #include "QuickQanava.h"
 #include "drgbrowsermodel.h"
 #include "drgchapter.h"
+#include "listmodel.h"
+#include "../icd-project/backendDatabase/database.h"
 
 int main(int argc, char *argv[])
 {
-    DRGChapter chap1;
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
     QQuickStyle::setStyle("Universal");
-    DRGBrowserModel model;
+    Database *db = new Database;
+    DRGBrowserModel treeModel;
+    treeModel.setDb(db);
+    ListModel listModel;
+    listModel.setDb(db);
 
     QQmlApplicationEngine engine;
     engine.addPluginPath(QStringLiteral("QuickQanava/src"));
     QuickQanava::initialize(&engine);
-    engine.rootContext()->setContextProperty("treeModel",&model);
+    engine.rootContext()->setContextProperty("listModel", &listModel);
+    engine.rootContext()->setContextProperty("treeModel", &treeModel);
     qmlRegisterType<qan::Graph>("MyGraph",1,0,"CustomGraph");
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

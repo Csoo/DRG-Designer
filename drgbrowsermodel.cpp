@@ -2,15 +2,11 @@
 #include <QtDebug>
 
 DRGBrowserModel::DRGBrowserModel(QObject *parent)
-    : QAbstractItemModel(parent)
+    : QAbstractItemModel(parent),
+      dbError(""),
+      rootItem(new TreeItem(0))
 {
 
-    rootItem = new TreeItem;
-
-    rootItem->setCode("TEST2");
-    rootItem->setTitle("TITLE2");
-
-    setUpModel();
 }
 
 TreeItem *DRGBrowserModel::getItem(const QModelIndex &index) const
@@ -100,6 +96,7 @@ int DRGBrowserModel::columnCount(const QModelIndex &parent) const
 bool DRGBrowserModel::hasChildren(const QModelIndex &parent) const
 {
     TreeItem *parentItem = this->getItem(parent);
+
     return parentItem->childCount() > 0;
 }
 
@@ -119,7 +116,7 @@ QVariant DRGBrowserModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role != CodeRole && role != TitleRole)
+    if (role != CodeRole && role != TitleRole && role != IdRole)
         return QVariant();
 
     TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
@@ -147,8 +144,16 @@ Qt::ItemFlags DRGBrowserModel::flags(const QModelIndex &index) const
 
 bool DRGBrowserModel::insertRows(int row, int count, const QModelIndex &parent)
 {
+    qDebug() << "inset rows" << row << count;
+    TreeItem *parentItem = getItem(parent);
+    if (!parentItem)
+        return false;
+
     beginInsertRows(parent, row, row + count - 1);
+    bool ok = parentItem->insertChildren(row, count);
     endInsertRows();
+
+    return ok;
 }
 
 bool DRGBrowserModel::insertColumns(int column, int count, const QModelIndex &parent)
@@ -181,20 +186,110 @@ bool DRGBrowserModel::removeColumns(int column, int count, const QModelIndex &pa
 QHash<int, QByteArray> DRGBrowserModel::roleNames() const
 {
     QHash<int, QByteArray> names;
+    names[IdRole] = "id";
     names[CodeRole] = "code";
     names[TitleRole] = "title";
     return names;
 }
 
-void DRGBrowserModel::setUpModel()
+bool DRGBrowserModel::connectToDatabase()
 {
-    TreeItem *Dog = new TreeItem("01","Kutya");
-    TreeItem *newItem = new TreeItem("111", "Puli");
-    Dog->appendChild(newItem);
-    newItem->appendChild(new TreeItem("112", "Gömbi"));
-    newItem->appendChild(new TreeItem("112", "Picur"));
-    rootItem->appendChild(Dog);
-    TreeItem *Cat = new TreeItem("02", "Macska");
-    Cat->appendChild(new TreeItem("111", "Sziami"));
-    rootItem->appendChild(Cat);
+    if (!db->connectDatabase(&dbError)) {
+        return false;
+    }
+    return true;
+}
+
+void DRGBrowserModel::loadIcd(unsigned int id, const QModelIndex &parent)
+{
+    //not loaded
+    qDebug() << id << " icd11 loading..";
+    TreeItem *parentItem = this->getItem(parent);
+    QSqlQuery query = db->listIcdDrgRelation(id);
+    removeRows(0, parentItem->childCount(), parent);
+
+    qDebug() << id << " icd11 loading..";
+
+    while (query.next()) {
+        //ICD11 *icd = new ICD11(query.value(0).toInt(), query.value(2).toString(), query.value(3).toString());
+        insertRow(0, parent);
+        parentItem->child(0)->setCode(query.value(2).toString());
+        parentItem->child(0)->setTitle(query.value(3).toString());
+    }
+    qDebug() << id << " icd11 loaded!";
+}
+
+void DRGBrowserModel::setDb(Database *value)
+{
+    db = value;
+}
+
+unsigned int DRGBrowserModel::depth(const QModelIndex &parent) const
+{
+    unsigned int depth = 0;
+    TreeItem *parentTreeItem = this->getItem(parent);
+
+    while (parentTreeItem->parentItem() != nullptr) {
+        parentTreeItem = parentTreeItem->parentItem();
+        depth++;
+    }
+
+    return depth;
+}
+
+unsigned int DRGBrowserModel::getId(const QModelIndex &parent) const
+{
+    TreeItem *parentItem = this->getItem(parent);
+
+    return parentItem->getId();
+}
+
+bool DRGBrowserModel::isEmpty(const QModelIndex &parent) const
+{
+    TreeItem *parentItem = this->getItem(parent);
+
+    return (parentItem->childCount() == 1 && parentItem->child(0)->getCode() == 0)
+            || parentItem->childCount() == 0;
+}
+
+QString DRGBrowserModel::getDbError() const
+{
+    return dbError;
+}
+
+void DRGBrowserModel::loadDrgEntities(int drgId)
+{
+    beginResetModel();
+    qDebug() << "load items";
+    QSqlQuery query = db->listDrgChapters(drgId);
+    QList<unsigned int> chapterIds;
+    while (query.next()) {
+        unsigned int chapterId = query.value(0).toInt();
+        DRGChapter *chapter = new DRGChapter(chapterId, query.value(2).toString(),
+                                             query.value(3).toString());
+        chapterIds.append(chapterId);
+        rootItem->appendChild(chapter);
+    }
+
+    for (auto chapter : rootItem->getChildItems()) {
+        QSqlQuery entityQuery = db->listDrgEntities(chapter->getId());
+        while (entityQuery.next()) {
+            DRG *entity = new DRG(entityQuery.value(0).toInt(), entityQuery.value(3).toString(),
+                                  entityQuery.value(4).toString());
+            entity->setAttributes(entityQuery.value(6).toInt(), entityQuery.value(7).toInt(), entityQuery.value(8).toInt(),entityQuery.value(9).toInt(), entityQuery.value(5).toString());
+            entity->appendChild(new ICD11(0));
+            chapter->appendChild(entity);
+        }
+    }
+    endResetModel();
+
+//    TreeItem *Dog = new TreeItem("01","Kutya");
+//    TreeItem *newItem = new TreeItem("111", "Puli");
+//    Dog->appendChild(newItem);
+//    newItem->appendChild(new TreeItem("112", "Gömbi"));
+//    newItem->appendChild(new TreeItem("112", "Picur"));
+//    rootItem->appendChild(Dog);
+//    TreeItem *Cat = new TreeItem("02", "Macska");
+//    Cat->appendChild(new TreeItem("111", "Sziami"));
+//    rootItem->appendChild(Cat);
 }

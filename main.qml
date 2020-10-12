@@ -5,9 +5,16 @@ import "./NordStyle"
 ApplicationWindow {
     id: applicationWindows
     visible: true
-    width: 500
-    height: 400
+    width: 640
+    height: 300
     title: qsTr("HBCs Tervező")
+
+    Component.onCompleted: {
+        treeModel.connectToDatabase()
+        listModel.loadDrgs()
+        busyIndicator.running = false
+    }
+
     menuBar: TopMenu {
         id: menu
         visible: false
@@ -16,15 +23,33 @@ ApplicationWindow {
     Loader {
         id: windowLoader
         anchors.fill: parent
-        source: "StartupWindow.qml"
+        source: ""
+        onLoaded: {
+            console.log(source, " is loaded")
+        }
+    }
+
+    BusyIndicator {
+        id: busyIndicator
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        running: false
     }
 
     StartupWindow {
+        id: start
         onGoToMain: {
-            windowLoader.source = "MainWindow.qml"
-            applicationWindows.visibility = "Maximized"
-            menu.visible = true
-            visible = false
+            if (treeModel.connectToDatabase()) {
+                busyIndicator.running = true
+                windowLoader.setSource("MainWindow.qml", {"drgId": drgId})
+                busyIndicator.running = false
+                applicationWindows.visibility = "Maximized"
+                menu.visible = true
+                start.visible = false
+            } else {
+                console.log(treeModel.dbError)
+            }
         }
     }
 

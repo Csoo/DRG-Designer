@@ -5,8 +5,15 @@
 
 class DRG : public TreeItem
 {
+private:
+    unsigned int minDay;
+    unsigned int maxDay;
+    float normativeDay;
+    float weight;
+    QString simpleTitle;
 public:
-    DRG();
+    DRG(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
+    void setAttributes(unsigned int minDay, unsigned int maxDay, float normativeDay, float weight, QString simpleTitle);
 };
 
 #endif // DRG_H

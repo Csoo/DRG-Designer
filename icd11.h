@@ -6,7 +6,7 @@
 class ICD11 : public TreeItem
 {
 public:
-    ICD11();
+    ICD11(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
 };
 
 #endif // ICD11_H

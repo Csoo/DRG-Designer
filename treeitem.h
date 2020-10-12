@@ -8,7 +8,7 @@
 class TreeItem
 {
 public:
-    explicit TreeItem(const QString &code = "", const QString &title = "", TreeItem *parentItem = 0);
+    explicit TreeItem(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
     virtual ~TreeItem();
 
     void appendChild(TreeItem *child);
@@ -28,7 +28,13 @@ public:
 
     void setParentItem(TreeItem *parentItem);
 
+    QList<TreeItem *> getChildItems() const;
+
+    unsigned int getId() const;
+
+    bool insertChildren(int row, int count);
 protected:
+    unsigned int id;
     QString code;
     QString title;
     QList<TreeItem*> m_childItems;

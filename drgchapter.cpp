@@ -1,8 +1,7 @@
 #include "drgchapter.h"
 
-DRGChapter::DRGChapter(const QString &code, const QString &title, TreeItem *parentItem)
+DRGChapter::DRGChapter(unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
+    TreeItem(id, code, title, parentItem)
 {
-    this->code = code;
-    this->title = title;
-    this->m_parentItem = parentItem;
+
 }

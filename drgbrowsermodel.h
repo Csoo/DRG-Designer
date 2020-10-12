@@ -1,17 +1,24 @@
-#ifndef TESTMODEL_H
-#define TESTMODEL_H
+#ifndef DRGBROWSERMODEL_H
+#define DRGBROWSERMODEL_H
 
 #include <QAbstractItemModel>
 #include "treeitem.h"
+#include "drgchapter.h"
+#include "drg.h"
+#include "icd11.h"
+#include <QSqlQuery>
+#include "../icd-project/backendDatabase/database.h"
 
 class DRGBrowserModel : public QAbstractItemModel
 {
     Q_OBJECT
+    Q_PROPERTY(QString dbError READ getDbError())
 
 public:
     enum TreeModelRoles
     {
-        CodeRole = Qt::UserRole + 1,
+        IdRole = Qt::UserRole + 1,
+        CodeRole,
         TitleRole
     };
     explicit DRGBrowserModel(QObject *parent = nullptr);
@@ -53,11 +60,23 @@ public:
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
     QHash<int, QByteArray> roleNames() const override;
 
+    QString getDbError() const;
+
+    void setDb(Database *value);
+
+    Q_INVOKABLE unsigned int depth(const QModelIndex &parent) const;
+    Q_INVOKABLE unsigned int getId(const QModelIndex &parent) const;
+    Q_INVOKABLE bool isEmpty(const QModelIndex &parent) const;
+    Q_INVOKABLE bool connectToDatabase();
+    Q_INVOKABLE void loadIcd(unsigned int id, const QModelIndex &parent);
+    Q_INVOKABLE void loadDrgEntities(int drgId);
 private:
-    void setUpModel();
+
+    Database *db;
+    QString dbError;
 
     TreeItem *rootItem;
     QHash<int, QByteArray> m_roleNameMapping;
 };
 
-#endif // TESTMODEL_H
+#endif

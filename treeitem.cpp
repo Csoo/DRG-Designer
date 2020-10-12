@@ -1,7 +1,8 @@
 #include "treeitem.h"
 #include <QStringList>
 
-TreeItem::TreeItem(const QString &code, const QString &title, TreeItem *parentItem):
+TreeItem::TreeItem(unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
+    id(id),
     code(code),
     title(title),
     m_parentItem(parentItem)
@@ -73,8 +74,9 @@ QVariant TreeItem::data(int index) const
 {
     switch (index)
     {
-        case 0: return code;
-        case 1: return title;
+        case 0: return id;
+        case 1: return code;
+        case 2: return title;
     }
 
     return -1;
@@ -93,4 +95,28 @@ void TreeItem::setCode(const QString &value)
 void TreeItem::setParentItem(TreeItem *parentItem)
 {
     m_parentItem = parentItem;
+}
+
+QList<TreeItem *> TreeItem::getChildItems() const
+{
+    return m_childItems;
+}
+
+unsigned int TreeItem::getId() const
+{
+    return id;
+}
+
+bool TreeItem::insertChildren(int row, int count)
+{
+    if (row < 0 || row > m_childItems.size())
+        return false;
+
+    for (int row = 0; row < count; ++row) {
+        TreeItem *item = new TreeItem(0);
+        item->setParentItem(this);
+        m_childItems.insert(row, item);
+    }
+
+    return true;
 }

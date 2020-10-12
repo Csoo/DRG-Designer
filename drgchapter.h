@@ -6,7 +6,7 @@
 class DRGChapter : public TreeItem
 {
 public:
-    DRGChapter(const QString &code = "", const QString &title = "", TreeItem *parentItem = 0);
+    DRGChapter(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
 
 };
 

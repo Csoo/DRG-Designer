@@ -5,7 +5,8 @@ import QtQuick.Controls.Universal 2.3
 import "./NordStyle"
 
 Item {
-    id: item1
+    property int drgId: -1
+
     Item {
         anchors.left: treeView.right
         anchors.right: parent.right
@@ -17,6 +18,7 @@ Item {
         anchors.leftMargin: 0
 
         SwipeView {
+            id: swipeView
             anchors.fill: parent
             interactive: false
             currentIndex: tabBar.currentIndex
@@ -42,8 +44,8 @@ Item {
 
             }
             TabButton {
-                id: tabButton1
-                text: qsTr("Details")
+                id: detailsButton
+                text: qsTr("Részletek")
                 rightPadding: 9
                 leftPadding: 9
                 padding: 3
@@ -52,13 +54,13 @@ Item {
                 width: implicitWidth
                 background:
                     Rectangle {
-                        property bool isActive: false
-                        color: tabButton1.checked ? Nord.background : Nord.softBackground
+                        color: detailsButton.checked ? Nord.background : Nord.softBackground
                     }
             }
             TabButton {
-                id: tabButton2
-                text: qsTr("Graph")
+                id: bno11Button
+                enabled: false
+                text: qsTr("BNO-11")
                 rightPadding: 9
                 leftPadding: 9
                 padding: 3
@@ -67,8 +69,7 @@ Item {
                 width: implicitWidth
                 background:
                     Rectangle {
-                        property bool isActive: false
-                        color: tabButton2.checked ? Nord.background : Nord.softBackground
+                        color: bno11Button.checked ? Nord.background : Nord.softBackground
                     }
             }
         }
@@ -76,17 +77,18 @@ Item {
 
     DRGBrowser {
         id: treeView
+        drgId: parent.drgId
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.leftMargin: 0
         anchors.bottomMargin: 0
         anchors.topMargin: 30
+        width: 350
         MouseArea {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: -3
+            anchors.horizontalCenter: parent.right
             anchors.bottomMargin: 0
             anchors.topMargin: 0
 
@@ -96,19 +98,34 @@ Item {
 
             drag {
                 target: parent
+                threshold: 1
                 axis: Drag.XAxis
-                minimumX: -1
-                maximumX: 1
-                smoothed: true
+                smoothed: false
             }
             onMouseXChanged: {
                 if (drag.active) {
-                    var newWidth = mouseX + treeView.width
+                    var newWidth = mouseX + treeView.width + treeView.width - 6
                     treeView.width = newWidth < treeView.maxWidth ? newWidth > treeView.minWidth ? newWidth : treeView.minWidth : treeView.maxWidth
                 }
                 treeView.x = 0
             }
             cursorShape: containsMouse ? Qt.SplitHCursor : Qt.ArrowCursor
+        }
+
+        onDrgClicked: {
+            console.log(id)
+            bno11Button.enabled = false
+            tabBar.currentIndex = 0
+        }
+        onChapterClicked: {
+            console.log(id)
+            bno11Button.enabled = false
+            tabBar.currentIndex = 0
+
+        }
+        onIcdClicked: {
+            console.log(id)
+            bno11Button.enabled = true
         }
     }
 

@@ -1,4 +1,4 @@
-QT += quick quickcontrols2 qml
+QT += quick quickcontrols2 qml sql
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -13,10 +13,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        ../icd-project/backendDatabase/database.cpp \
         drg.cpp \
         drgbrowsermodel.cpp \
         drgchapter.cpp \
         icd11.cpp \
+        listmodel.cpp \
         main.cpp \
         treeitem.cpp
 
@@ -39,10 +41,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    ../icd-project/backendDatabase/database.h \
     drg.h \
     drgbrowsermodel.h \
     drgchapter.h \
     icd11.h \
+    listmodel.h \
     treeitem.h
 
 SUBDIRS += \
