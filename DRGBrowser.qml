@@ -8,9 +8,9 @@ TreeView {
     property int maxWidth: 1000
     property int minWidth: 300
 
-    signal drgClicked(int id)
-    signal chapterClicked(int id)
-    signal icdClicked(int id)
+    signal drgClicked(var index)
+    signal chapterClicked(var index)
+    signal icdClicked(var index)
 
     Component.onCompleted: {
         treeModel.loadDrgEntities(drgId)
@@ -78,9 +78,9 @@ TreeView {
 
     onClicked: {
         switch (treeModel.depth(index)) {
-            case 1: drgClicked(treeModel.getId(index)); break;
-            case 2: chapterClicked(treeModel.getId(index)); break;
-            case 3: icdClicked(treeModel.getId(index)); break;
+            case 1: chapterClicked(index); break;
+            case 2: drgClicked(index); break;
+            case 3: icdClicked(index); break;
         }
     }
 

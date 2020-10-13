@@ -6,6 +6,15 @@ import "./NordStyle"
 
 Qan.GraphView {
 
+    function addNode(title) {
+        graph.clearGraph()
+        var node = graph.insertNode()
+        node.label = title
+        node.item.x = 300
+        node.item.y = 400
+        //graph.selectedNodes(node)
+    }
+
     id: graphView
     anchors.fill: parent
     navigable: true

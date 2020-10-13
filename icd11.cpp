@@ -5,3 +5,19 @@ ICD11::ICD11(unsigned int id, const QString &code, const QString &title, TreeIte
 {
 
 }
+
+ICD11::ICD11(DRGBrowserModel *model):
+    model(model)
+{
+
+}
+
+void ICD11::setAttributesFromModel(const QModelIndex index)
+{
+    code = model->getItem(index)->getCode();
+}
+
+QString ICD11::getParentCode() const
+{
+
+}

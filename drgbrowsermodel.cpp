@@ -213,6 +213,7 @@ void DRGBrowserModel::loadIcd(unsigned int id, const QModelIndex &parent)
     while (query.next()) {
         //ICD11 *icd = new ICD11(query.value(0).toInt(), query.value(2).toString(), query.value(3).toString());
         insertRow(0, parent);
+        parentItem->child(0)->setId(query.value(0).toInt());
         parentItem->child(0)->setCode(query.value(2).toString());
         parentItem->child(0)->setTitle(query.value(3).toString());
     }
@@ -277,7 +278,7 @@ void DRGBrowserModel::loadDrgEntities(int drgId)
             DRG *entity = new DRG(entityQuery.value(0).toInt(), entityQuery.value(3).toString(),
                                   entityQuery.value(4).toString());
             entity->setAttributes(entityQuery.value(6).toInt(), entityQuery.value(7).toInt(), entityQuery.value(8).toInt(),entityQuery.value(9).toInt(), entityQuery.value(5).toString());
-            entity->appendChild(new ICD11(0));
+            entity->appendChild(new ICD11(0,""));
             chapter->appendChild(entity);
         }
     }

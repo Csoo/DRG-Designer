@@ -6,6 +6,12 @@ DRG::DRG(unsigned int id, const QString &code, const QString &title, TreeItem *p
 
 }
 
+DRG::DRG(DRGBrowserModel *model):
+    model(model)
+{
+
+}
+
 void DRG::setAttributes(unsigned int minDay, unsigned int maxDay, float normativeDay, float weight, QString simpleTitle)
 {
     this->minDay = minDay;
@@ -13,4 +19,9 @@ void DRG::setAttributes(unsigned int minDay, unsigned int maxDay, float normativ
     this->normativeDay = normativeDay;
     this->weight = weight;
     this->simpleTitle = simpleTitle;
+}
+
+void DRG::setAttributesFromModel(const QModelIndex &index)
+{
+    title = model->getItem(index)->getTitle();
 }

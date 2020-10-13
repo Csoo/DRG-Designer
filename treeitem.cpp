@@ -1,6 +1,11 @@
 #include "treeitem.h"
 #include <QStringList>
 
+TreeItem::TreeItem()
+{
+
+}
+
 TreeItem::TreeItem(unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
     id(id),
     code(code),
@@ -119,4 +124,9 @@ bool TreeItem::insertChildren(int row, int count)
     }
 
     return true;
+}
+
+void TreeItem::setId(unsigned int value)
+{
+    id = value;
 }

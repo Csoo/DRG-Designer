@@ -6,7 +6,10 @@ Item {
     anchors.fill: parent
     id: item1
     signal goToMain(int drgId)
+    width: 600
+    height: 400
     Button {
+        id: loadButton
         width: 220
         height: 33
         anchors.top: comboBox.top
@@ -37,6 +40,7 @@ Item {
     }
 
     Button {
+        id: closeButton
         y: 397
         width: 100
         height: 33
@@ -52,12 +56,13 @@ Item {
 
     ComboBox {
         id: comboBox
+        y: 144
         width: 260
         height: 33
         anchors.left: parent.left
-        anchors.top: parent.top
+        anchors.bottom: closeButton.top
+        anchors.bottomMargin: 30
         anchors.leftMargin: 50
-        anchors.topMargin: 50
         currentIndex: 0
         onActivated: {
 
@@ -75,10 +80,6 @@ Item {
                 color: Nord.frost
                 font: comboBox.font
             }
-//            background: Rectangle {
-//                anchors.fill: parent
-//                color: comboBox.highlightedIndex == index ? Nord.highlight : Nord.softBackground
-//            }
 
             highlighted: comboBox.highlightedIndex == index
             MouseArea {
@@ -102,6 +103,66 @@ Item {
             }
         }
     }
+
+    Item {
+        id: userName
+        x: 176
+        width: 200
+        height: 60
+        anchors.top: parent.top
+        anchors.topMargin: 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        TextField {
+            id: userField
+            height: 35
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 0
+            anchors.rightMargin: 0
+            anchors.leftMargin: 0
+        }
+
+        Label {
+            id: label
+            text: qsTr("Felhasználó név")
+            anchors.bottom: userField.top
+            anchors.bottomMargin: 3
+        }
+    }
+
+    Item {
+        id: password
+        x: 176
+        width: 200
+        height: 60
+        anchors.top: userName.bottom
+        anchors.topMargin: 5
+        anchors.horizontalCenter: parent.horizontalCenter
+        TextField {
+            id: pwField
+            height: 35
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 0
+            anchors.rightMargin: 0
+            anchors.leftMargin: 0
+            echoMode: TextInput.Password
+            passwordCharacter: "*"
+        }
+
+        Label {
+            id: label1
+            x: 0
+            y: 0
+            text: qsTr("Jelszó")
+            anchors.bottom: pwField.top
+            anchors.bottomMargin: 3
+        }
+    }
+
+
 }
 
 /*##^##

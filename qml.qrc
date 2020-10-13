@@ -10,5 +10,6 @@
         <file>ICD11Graph.qml</file>
         <file>DRGBrowser.qml</file>
         <file>Editor.qml</file>
+        <file>DRGDetails.qml</file>
     </qresource>
 </RCC>

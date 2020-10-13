@@ -5,6 +5,8 @@
 #include "drgbrowsermodel.h"
 #include "drgchapter.h"
 #include "listmodel.h"
+#include "icd11.h"
+#include "drg.h"
 #include "../icd-project/backendDatabase/database.h"
 
 int main(int argc, char *argv[])
@@ -15,6 +17,8 @@ int main(int argc, char *argv[])
     QQuickStyle::setStyle("Universal");
     Database *db = new Database;
     DRGBrowserModel treeModel;
+    ICD11 selectedICD(&treeModel);
+    DRG selectedDRG(&treeModel);
     treeModel.setDb(db);
     ListModel listModel;
     listModel.setDb(db);
@@ -24,6 +28,8 @@ int main(int argc, char *argv[])
     QuickQanava::initialize(&engine);
     engine.rootContext()->setContextProperty("listModel", &listModel);
     engine.rootContext()->setContextProperty("treeModel", &treeModel);
+    engine.rootContext()->setContextProperty("icd", &selectedICD);
+    engine.rootContext()->setContextProperty("drg", &selectedDRG);
     qmlRegisterType<qan::Graph>("MyGraph",1,0,"CustomGraph");
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

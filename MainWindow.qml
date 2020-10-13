@@ -24,12 +24,18 @@ Item {
             currentIndex: tabBar.currentIndex
 
             Item {
-                id: editor
-                Editor {}
+                id: editorTab
+                Loader {
+                    id: detailsLoader
+                    anchors.fill: parent
+                    source: "DRGDetails.qml"
+                }
             }
             Item {
-                id: graph
-                ICD11Graph {}
+                id: graphTab
+                ICD11Graph {
+                    id: graph
+                }
             }
         }
 
@@ -113,19 +119,22 @@ Item {
         }
 
         onDrgClicked: {
-            console.log(id)
             bno11Button.enabled = false
+            drg.setAttributesFromModel(index)
+            detailsLoader.source = "DRGDetails.qml"
             tabBar.currentIndex = 0
         }
         onChapterClicked: {
-            console.log(id)
             bno11Button.enabled = false
+            detailsLoader.source = "Editor.qml"
             tabBar.currentIndex = 0
 
         }
         onIcdClicked: {
-            console.log(id)
+            icd.setAttributesFromModel(index)
             bno11Button.enabled = true
+            detailsLoader.source = "Editor.qml"
+            graph.addNode(icd.getCode())
         }
     }
 

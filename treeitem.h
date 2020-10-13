@@ -5,9 +5,11 @@
 #include <QString>
 #include <QVariant>
 
-class TreeItem
+class TreeItem : public QObject
 {
+    Q_OBJECT
 public:
+    TreeItem();
     explicit TreeItem(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
     virtual ~TreeItem();
 
@@ -21,18 +23,20 @@ public:
     TreeItem *parentItem();
 
     virtual QVariant data(int index) const;
-    QString getTitle() const;
+    Q_INVOKABLE QString getTitle() const;
     void setTitle(const QString &value);
-    QString getCode() const;
+    Q_INVOKABLE QString getCode() const;
     void setCode(const QString &value);
 
     void setParentItem(TreeItem *parentItem);
 
     QList<TreeItem *> getChildItems() const;
 
-    unsigned int getId() const;
+    Q_INVOKABLE unsigned int getId() const;
 
     bool insertChildren(int row, int count);
+    void setId(unsigned int value);
+
 protected:
     unsigned int id;
     QString code;

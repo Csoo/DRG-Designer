@@ -5,8 +5,8 @@ import "./NordStyle"
 ApplicationWindow {
     id: applicationWindows
     visible: true
-    width: 640
-    height: 300
+    width: 600
+    height: 400
     title: qsTr("HBCs Tervező")
 
     Component.onCompleted: {
