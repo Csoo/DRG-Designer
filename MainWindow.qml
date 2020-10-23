@@ -119,13 +119,14 @@ Item {
         }
 
         onDrgClicked: {
-            bno11Button.enabled = false
+            //bno11Button.enabled = false
             drg.setAttributesFromModel(index)
             detailsLoader.source = "DRGDetails.qml"
             tabBar.currentIndex = 0
+            graph.addNodes(treeModel.getItemIndexes(index))
         }
         onChapterClicked: {
-            bno11Button.enabled = false
+            //bno11Button.enabled = false
             detailsLoader.source = "Editor.qml"
             tabBar.currentIndex = 0
 
@@ -133,8 +134,8 @@ Item {
         onIcdClicked: {
             icd.setAttributesFromModel(index)
             bno11Button.enabled = true
-            detailsLoader.source = "Editor.qml"
-            graph.addNode(icd.getCode())
+            detailsLoader.source = "ICDDetails.qml"
+            //graph.addNode(icd.getCode())
         }
     }
 

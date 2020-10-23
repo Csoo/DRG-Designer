@@ -4,10 +4,110 @@ import "./NordStyle"
 
 Item {
     anchors.fill: parent
-    id: item1
+    id: mainItem
     signal goToMain(int drgId)
     width: 600
     height: 400
+
+
+    Component.onCompleted: {
+        state = "initial"
+        //goToMain(1)
+    }
+
+    transitions: [
+        Transition {
+            from: "*"; to: "*"
+            NumberAnimation {
+                targets: userError
+                property: "width"
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: pwError
+                property: "width"
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: emptyError
+                property: "width"
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+        }
+    ]
+
+    Rectangle {
+        id: pwError
+        color: Nord.error
+        radius: 5
+        border.width: 0
+        anchors.verticalCenter: password.verticalCenter
+        anchors.left: password.right
+        anchors.verticalCenterOffset: 10
+        anchors.leftMargin: 10
+        width: 0
+        height: pwErrorMsg.contentHeight + 6
+        Label {
+            id: pwErrorMsg
+            maximumLineCount: 2
+            anchors.fill: parent
+            text: qsTr("Adja meg a jelszavát!")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Text.WordWrap
+            padding: 4
+        }
+    }
+
+    Rectangle {
+        id: userError
+        color: Nord.error
+        radius: 5
+        border.width: 0
+        anchors.verticalCenter: userName.verticalCenter
+        anchors.left: userName.right
+        anchors.verticalCenterOffset: 10
+        anchors.leftMargin: 10
+        width: 0
+        height: userErrorrMsg.contentHeight + 6
+        Label {
+            id: userErrorrMsg
+            anchors.fill: parent
+            maximumLineCount: 2
+            text: qsTr("Adja meg a felhasználónevét!")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Text.WordWrap
+            padding: 4
+        }
+    }
+
+    Rectangle {
+        id: emptyError
+        color: mainItem.state == "authSuccess" ? Nord.ok : Nord.error
+        radius: 5
+        border.width: 0
+        anchors.verticalCenter: userName.verticalCenter
+        anchors.left: userName.right
+        anchors.verticalCenterOffset: 30
+        anchors.leftMargin: 10
+        width: 0
+        height: emptyErrorMsg.contentHeight + 6
+        Label {
+            id: emptyErrorMsg
+            anchors.fill: parent
+            maximumLineCount: 2
+            text: mainItem.state == "authSuccess" ? "OK" : qsTr("Kitöltendő mezők")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Text.WordWrap
+            padding: 4
+        }
+    }
+
     Button {
         id: loadButton
         width: 220
@@ -18,7 +118,7 @@ Item {
         anchors.topMargin: 0
         text: qsTr("HBCs hierarchia betöltése")
         anchors.right: parent.right
-        enabled: comboBox.currentIndex != 0
+        enabled: comboBox.currentIndex != 0 && mainItem.state == "authSuccess"
         onClicked: {
             goToMain(comboBox.currentValue)
         }
@@ -32,6 +132,7 @@ Item {
         anchors.rightMargin: 50
         highlighted: true
         anchors.bottomMargin: 50
+        enabled: mainItem.state == "authSuccess"
         text: qsTr("Új hierarchia létrehozása")
         anchors.right: parent.right
         onClicked: {
@@ -64,9 +165,6 @@ Item {
         anchors.bottomMargin: 30
         anchors.leftMargin: 50
         currentIndex: 0
-        onActivated: {
-
-        }
         textRole: "title"
         valueRole: "id"
         model: listModel
@@ -74,6 +172,10 @@ Item {
             hoverEnabled: true
             height: comboBox.height
             width: comboBox.width
+            background: Rectangle {
+                anchors.fill: parent
+                color: parent.highlighted ? Nord.accent : Nord.background
+            }
             contentItem: Text {
                 text: title
                 verticalAlignment: Text.AlignVCenter
@@ -110,7 +212,7 @@ Item {
         width: 200
         height: 60
         anchors.top: parent.top
-        anchors.topMargin: 60
+        anchors.topMargin: 40
         anchors.horizontalCenter: parent.horizontalCenter
         TextField {
             id: userField
@@ -121,6 +223,9 @@ Item {
             anchors.bottomMargin: 0
             anchors.rightMargin: 0
             anchors.leftMargin: 0
+            onPressed: {
+                mainItem.state = "initial"
+            }
         }
 
         Label {
@@ -150,6 +255,9 @@ Item {
             anchors.leftMargin: 0
             echoMode: TextInput.Password
             passwordCharacter: "*"
+            onPressed: {
+                mainItem.state = "initial"
+            }
         }
 
         Label {
@@ -162,11 +270,129 @@ Item {
         }
     }
 
+    Button {
+        id: authButton
+        x: 200
+        height: 30
+        width: password.width
+        text: qsTr("Azonosítás")
+        highlighted: true
+        anchors.top: password.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 10
+        enabled: mainItem.state != "authSuccess"
+        onClicked: {
+            if (pwField.text == "" && userField.text == "") mainItem.state = "empty"
+            else if (pwField.text == "") mainItem.state = "emptyPw"
+            else if (userField.text == "") mainItem.state = "emptyUser"
+            else mainItem.state = "authSuccess"
+        }
+    }
 
+    states: [
+        State {
+            name: "initial"
+            PropertyChanges {
+                target: userError
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: pwError
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: emptyError
+                visible: false
+                width: 0
+            }
+        },
+        State {
+            name: "emptyUser"
+            PropertyChanges {
+                target: userError
+                explicit: true
+                visible: true
+                width: 180
+            }
+            PropertyChanges {
+                target: pwError
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: emptyError
+                visible: false
+                width: 0
+            }
+        },
+        State {
+            name: "emptyPw"
+            PropertyChanges {
+                target: pwError
+                visible: true
+                width: 180
+            }
+            PropertyChanges {
+                target: userError
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: emptyError
+                visible: false
+                width: 0
+            }
+        },
+        State {
+            name: "empty"
+            PropertyChanges {
+                target: emptyError
+                visible: true
+                width: 180
+            }
+            PropertyChanges {
+                target: pwError
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: userError
+                visible: false
+                width: 0
+            }
+        },
+        State {
+            name: "authFailed"
+            PropertyChanges {
+                target: error
+                width: 180
+            }
+        },
+        State {
+            name: "authSuccess"
+            PropertyChanges {
+                target: emptyError
+                visible: true
+                width: 50
+            }
+            PropertyChanges {
+                target: pwError
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: userError
+                visible: false
+                width: 0
+            }
+        }
+    ]
 }
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:0.75;height:480;width:640}D{i:2}D{i:4}
+    D{i:0;formeditorZoom:0.75}
 }
 ##^##*/

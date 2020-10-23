@@ -1,7 +1,12 @@
 #include "drg.h"
 
+DRG::DRG()
+{
+
+}
+
 DRG::DRG(unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
-    TreeItem(id, code, title, parentItem)
+    TreeItem(Type::DRG, id, code, title, parentItem)
 {
 
 }

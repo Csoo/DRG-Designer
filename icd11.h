@@ -4,6 +4,7 @@
 #include "treeitem.h"
 #include "drgbrowsermodel.h"
 #include "QModelIndex"
+#include "enum.hpp"
 
 class DRGBrowserModel;
 
@@ -13,6 +14,7 @@ class ICD11 : public TreeItem
 private:
     DRGBrowserModel *model;
 public:
+    ICD11();
     ICD11(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
     ICD11(DRGBrowserModel *model);
 

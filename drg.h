@@ -4,6 +4,7 @@
 #include "treeitem.h"
 #include "drgbrowsermodel.h"
 #include "QModelIndex"
+#include "enum.hpp"
 
 class DRGBrowserModel;
 
@@ -18,6 +19,7 @@ private:
     QString simpleTitle;
     DRGBrowserModel *model;
 public:
+    DRG();
     DRG(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
     DRG(DRGBrowserModel *model);
     void setAttributes(unsigned int minDay, unsigned int maxDay, float normativeDay, float weight, QString simpleTitle);

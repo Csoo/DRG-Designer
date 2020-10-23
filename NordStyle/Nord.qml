@@ -8,4 +8,6 @@ QtObject {
     property color background: "#434C5E"
     property color softBackground: "#4C566A"
     property color highlight: "#4C566A"
+    property color error: "#BF616A"
+    property color ok: "#A3BE8C"
 }

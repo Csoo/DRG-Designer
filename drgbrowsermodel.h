@@ -6,6 +6,7 @@
 #include "drgchapter.h"
 #include "drg.h"
 #include "icd11.h"
+#include "enum.hpp"
 #include <QSqlQuery>
 #include "../icd-project/backendDatabase/database.h"
 
@@ -40,9 +41,6 @@ public:
     // Fetch data dynamically:
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const override;
 
-    bool canFetchMore(const QModelIndex &parent) const override;
-    void fetchMore(const QModelIndex &parent) override;
-
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     // Editable:
@@ -53,11 +51,9 @@ public:
 
     // Add data:
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-    bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 
     // Remove data:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-    bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
     QHash<int, QByteArray> roleNames() const override;
 
     QString getDbError() const;
@@ -66,10 +62,16 @@ public:
 
     Q_INVOKABLE unsigned int depth(const QModelIndex &parent) const;
     Q_INVOKABLE unsigned int getId(const QModelIndex &parent) const;
+    Q_INVOKABLE int getType(const QModelIndex &parent) const;
+    Q_INVOKABLE QString getTitle(const QModelIndex &parent) const;
+    Q_INVOKABLE QString getCode(const QModelIndex &parent) const;
     Q_INVOKABLE bool isEmpty(const QModelIndex &parent) const;
     Q_INVOKABLE bool connectToDatabase();
+    Q_INVOKABLE bool isParent(const QModelIndex &parent, const QModelIndex &child) const;
     Q_INVOKABLE void loadIcd(unsigned int id, const QModelIndex &parent);
     Q_INVOKABLE void loadDrgEntities(int drgId);
+    Q_INVOKABLE QVector<QModelIndex> getItemIndexes(const QModelIndex &index) const;
+    Q_INVOKABLE QVector<QModelIndex> getAjusencyVector(const QModelIndex &index) const;
 private:
 
     Database *db;

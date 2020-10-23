@@ -6,7 +6,8 @@ TreeItem::TreeItem()
 
 }
 
-TreeItem::TreeItem(unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
+TreeItem::TreeItem(int type, unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
+    type(type),
     id(id),
     code(code),
     title(title),
@@ -119,6 +120,22 @@ bool TreeItem::insertChildren(int row, int count)
 
     for (int row = 0; row < count; ++row) {
         TreeItem *item = new TreeItem(0);
+        switch (this->getType()) {
+            case Type::DRG_CAPTER : {
+                item->setType(Type::DRG);
+                break;
+            }
+            case Type::DRG : {
+                //item->setType(Type::DRG_TYPE);
+                item->setType(Type::ICD11);
+                break;
+            }
+            case Type::DRG_TYPE : {
+                item->setType(Type::ICD11);
+                break;
+            }
+            default: return false;
+        }
         item->setParentItem(this);
         m_childItems.insert(row, item);
     }
@@ -129,4 +146,14 @@ bool TreeItem::insertChildren(int row, int count)
 void TreeItem::setId(unsigned int value)
 {
     id = value;
+}
+
+int TreeItem::getType() const
+{
+    return type;
+}
+
+void TreeItem::setType(int value)
+{
+    type = value;
 }

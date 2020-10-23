@@ -4,13 +4,14 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
+#include "enum.hpp"
 
 class TreeItem : public QObject
 {
     Q_OBJECT
 public:
     TreeItem();
-    explicit TreeItem(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
+    explicit TreeItem(int type, unsigned int id = 0, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
     virtual ~TreeItem();
 
     void appendChild(TreeItem *child);
@@ -37,7 +38,11 @@ public:
     bool insertChildren(int row, int count);
     void setId(unsigned int value);
 
+    int getType() const;
+    void setType(int value);
+
 protected:
+    int type;
     unsigned int id;
     QString code;
     QString title;

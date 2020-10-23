@@ -41,6 +41,7 @@ public:
     void setDb(Database *value);
 
     Q_INVOKABLE void loadDrgs();
+    Q_INVOKABLE void loadIcd11(const QString &icd);
 
 private:
     QList<Item> items;

@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQml.Models 2.3
+import TypeEnum 1.0
 import "./NordStyle"
 
 TreeView {
@@ -65,22 +66,22 @@ TreeView {
         Drag.startDrag()
         Drag.active = false
         console.log("drag ended")
+        treeModel.getItemIndexes(index)
     }
 
     onExpanded: {
         console.log("expanded")
-        if (treeModel.isEmpty(index) && treeModel.depth(index) === 2) {
+        if (treeModel.isEmpty(index) && treeModel.getType(index) === Type.ICD11) {
             console.log("icd expanded", treeModel.getId(index))
             treeModel.loadIcd(treeModel.getId(index), index)
-            //treeModel.loadICD11(treeModel.data(index, 0))
         }
     }
 
     onClicked: {
-        switch (treeModel.depth(index)) {
-            case 1: chapterClicked(index); break;
-            case 2: drgClicked(index); break;
-            case 3: icdClicked(index); break;
+        switch (treeModel.getType(index)) {
+            case Type.DRG_CAPTER: chapterClicked(index); break;
+            case Type.DRG: drgClicked(index); break;
+            case Type.ICD11: icdClicked(index); break;
         }
     }
 

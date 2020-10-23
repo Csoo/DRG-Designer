@@ -79,3 +79,15 @@ void ListModel::loadDrgs()
     endResetModel();
 }
 
+void ListModel::loadIcd11(const QString &icd)
+{
+    beginResetModel();
+    items.clear();
+    QSqlQuery query = db->searchIcd11(icd, true);
+    qDebug() << "icd11 search";
+    while (query.next()) {
+        items.append(Item(query.value(0).toInt(), query.value(2).toString(), query.value(3).toString()));
+    }
+    endResetModel();
+}
+

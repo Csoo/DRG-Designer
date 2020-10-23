@@ -45,6 +45,7 @@ HEADERS += \
     drg.h \
     drgbrowsermodel.h \
     drgchapter.h \
+    enum.hpp \
     icd11.h \
     listmodel.h \
     treeitem.h

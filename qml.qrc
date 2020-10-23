@@ -11,5 +11,7 @@
         <file>DRGBrowser.qml</file>
         <file>Editor.qml</file>
         <file>DRGDetails.qml</file>
+        <file>ICDDetails.qml</file>
+        <file>PostCoordTree.qml</file>
     </qresource>
 </RCC>
