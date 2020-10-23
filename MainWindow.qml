@@ -110,7 +110,7 @@ Item {
             }
             onMouseXChanged: {
                 if (drag.active) {
-                    var newWidth = mouseX + treeView.width + treeView.width - 6
+                    var newWidth = mouseX + treeView.width - 6
                     treeView.width = newWidth < treeView.maxWidth ? newWidth > treeView.minWidth ? newWidth : treeView.minWidth : treeView.maxWidth
                 }
                 treeView.x = 0
@@ -119,14 +119,14 @@ Item {
         }
 
         onDrgClicked: {
-            //bno11Button.enabled = false
+            bno11Button.enabled = false
             drg.setAttributesFromModel(index)
             detailsLoader.source = "DRGDetails.qml"
             tabBar.currentIndex = 0
             graph.addNodes(treeModel.getItemIndexes(index))
         }
         onChapterClicked: {
-            //bno11Button.enabled = false
+            bno11Button.enabled = false
             detailsLoader.source = "Editor.qml"
             tabBar.currentIndex = 0
 

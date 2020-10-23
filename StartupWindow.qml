@@ -12,7 +12,7 @@ Item {
 
     Component.onCompleted: {
         state = "initial"
-        //goToMain(1)
+        goToMain(1)
     }
 
     transitions: [
@@ -174,7 +174,7 @@ Item {
             width: comboBox.width
             background: Rectangle {
                 anchors.fill: parent
-                color: parent.highlighted ? Nord.accent : Nord.background
+                color: parent.highlighted ? Nord.accent : Nord.night
             }
             contentItem: Text {
                 text: title

@@ -298,7 +298,6 @@ void DRGBrowserModel::loadDrgEntities(int drgId)
             DRG *drg = new DRG(drgQuery.value(0).toInt(), drgQuery.value(1).toString(), drgQuery.value(2).toString());
             TreeItem *type = new TreeItem(Type::DRG_TYPE, drgQuery.value(3).toInt(), drgQuery.value(4).toString());
             ICD11 *icd = new ICD11(drgQuery.value(5).toInt(), drgQuery.value(6).toString(), drgQuery.value(7).toString());
-            qDebug() << drg->getCode() << type->getId() << icd->getCode() << drgIdx << typeIdx;
             if (currentDrg != drgQuery.value(0).toInt()) {
                 drgIdx++;
                 typeIdx = 0;
@@ -352,10 +351,6 @@ QVector<QModelIndex> DRGBrowserModel::getItemIndexes(const QModelIndex &index) c
         }
         nodes.append(createIndex(nodeList.first()->row(), 0, nodeList.first()));
         nodeList.pop_front();
-    }
-
-    foreach (auto item, nodes) {
-        qDebug() << getItem(item)->getCode();
     }
 
     return nodes;

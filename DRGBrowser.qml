@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
+import QtQuick.Controls 2.4 as QQC2
 import QtQml.Models 2.3
 import TypeEnum 1.0
 import "./NordStyle"
@@ -85,6 +86,25 @@ TreeView {
         }
     }
 
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        onClicked: {
+            contextMenu.isChapter = false
+            contextMenu.isType = false
+            var index = parent.indexAt(mouse.x, mouse.y)
+            if (index.valid) {
+                    switch (treeModel.getType(index)){
+                    case Type.DRG_CAPTER : contextMenu.isChapter = true; break;
+                    case Type.DRG_TYPE : contextMenu.isType = true; break;
+                }
+            } else {
+                console.log("show context menu for other")
+            }
+            contextMenu.popup()
+        }
+    }
+
     TableViewColumn {
         role: "code"
         title: "Code"
@@ -97,4 +117,42 @@ TreeView {
     }
 
 
+    QQC2.Menu {
+        id: contextMenu
+        property bool isChapter: false
+        property bool isType: false
+        QQC2.Action { text: "Uj HBCs hozzaadasa"; enabled: contextMenu.isChapter }
+        QQC2.Action { text: "Uj ICD11 hozzaadasa"; enabled: contextMenu.isType }
+        QQC2.Action { text: "Uj focsoport hozzaadasa" }
+
+        delegate: QQC2.MenuItem {
+            id: menuItem
+            font.pixelSize: 10
+            implicitWidth: 170
+            implicitHeight: 28
+
+            contentItem: Text {
+                text: menuItem.text
+                font: menuItem.font
+                opacity: enabled ? 1.0 : 0.3
+                color: menuItem.highlighted ? "#ffffff" : Nord.frost
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+            }
+
+            background: Rectangle {
+                implicitWidth: 170
+                implicitHeight: 40
+                opacity: enabled ? 1 : 0.3
+                color: menuItem.highlighted ? Nord.highlight : "transparent"
+            }
+        }
+        background: Rectangle {
+            color: Nord.night
+            implicitWidth: 170
+            implicitHeight: 28 * contextMenu.count
+            radius: 2
+        }
+    }
 }

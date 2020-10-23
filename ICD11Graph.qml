@@ -99,7 +99,7 @@ Item {
             width: axisDropDown.width
             background: Rectangle {
                 anchors.fill: parent
-                color: parent.highlighted ? Nord.accent : Nord.background
+                color: parent.highlighted ? Nord.accent : Nord.night
             }
             contentItem: Text {
                 text: title
