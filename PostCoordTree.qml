@@ -6,10 +6,6 @@ import TypeEnum 1.0
 import "./NordStyle"
 
 TreeView {
-    Component.onCompleted: {
-        postCoordModel.loadDrgEntities(1)
-    }
-
     backgroundVisible: false
     headerVisible: false
     frameVisible: false

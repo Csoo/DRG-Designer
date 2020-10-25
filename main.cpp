@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     QQuickStyle::setStyle("Universal");
+
     Database *db = new Database;
     DRGBrowserModel treeModel;
     DRGBrowserModel postCoordModel;

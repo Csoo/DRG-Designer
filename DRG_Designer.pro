@@ -51,3 +51,5 @@ HEADERS += \
     treeitem.h
 
 SUBDIRS += \
+
+DISTFILES +=

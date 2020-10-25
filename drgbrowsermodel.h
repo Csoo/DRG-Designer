@@ -71,7 +71,8 @@ public:
     Q_INVOKABLE void loadIcd(unsigned int id, const QModelIndex &parent);
     Q_INVOKABLE void loadDrgEntities(int drgId);
     Q_INVOKABLE QVector<QModelIndex> getItemIndexes(const QModelIndex &index) const;
-    Q_INVOKABLE QVector<QModelIndex> getAjusencyVector(const QModelIndex &index) const;
+    Q_INVOKABLE void setDrgAttributes(const QModelIndex &chapterIndex);
+    Q_INVOKABLE void loadPostCoord(unsigned int id, int type);
 private:
 
     Database *db;

@@ -1,140 +1,212 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import QtQuick.Controls 2.4
 import "./NordStyle"
 
 Item {
-    id: item1
     anchors.fill: parent
-    Column {
-        id: column1
-        width: 288
-        height: 215
-        anchors.left: parent.horizontalCenter
+    ScrollView {
+    anchors.fill: parent
+    clip: true
+    Rectangle {
+        id: hbcs
         anchors.top: parent.top
-        anchors.leftMargin: -70
-        spacing: 15
-        anchors.topMargin: 72
-        TextField {
-            id: textField
-            height: 35
-            text: qsTr("Text Field")
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.leftMargin: 40
+        anchors.rightMargin: 40
+        anchors.topMargin: 70
+        height: 180
+        color: Nord.softBackground
+        SectionTitle {
+            id: hbcsTitle
+            anchors.top: parent.top
             anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
+            width: hbcs.width
+            title: qsTr("Homogén Betegség Csoport")
         }
-
-        TextField {
-            id: textField1
-            height: 35
-            text: qsTr("Text Field")
+        Grid {
+            id: hbcsForm
+            property int labelWidth: 200
+            property int valueWidth: 200
+            anchors.top: parent.top
+            verticalItemAlignment: Grid.AlignVCenter
             anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
-        }
-
-        TextField {
-            id: textField2
-            height: 35
-            text: qsTr("Text Field")
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
-        }
-
-        TextField {
-            id: textField3
-            height: 35
-            text: qsTr("Text Field")
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
-        }
-
-        TextField {
-            id: textField4
-            height: 35
-            text: qsTr("Text Field")
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
-        }
-
-    }
-
-    Column {
-        id: column
-        x: 57
-        width: 149
-        height: 400
-        anchors.right: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 72
-        anchors.rightMargin: 114
-        spacing: 15
-
-        Label {
-            id: label
-            height: 35
-            text: qsTr("Megnevezés")
-            anchors.left: parent.left
-            anchors.right: parent.right
-            verticalAlignment: Text.AlignVCenter
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
-        }
-
-        Label {
-            id: label1
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 35
-            text: qsTr("Kód")
-            verticalAlignment: Text.AlignVCenter
-            anchors.rightMargin: 0
-        }
-
-        Label {
-            id: label2
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 35
-            text: qsTr("Minimum ellátási napok száma")
-            verticalAlignment: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            anchors.rightMargin: 0
-        }
-
-        Label {
-            id: label3
-            width: 120
-            height: 35
-            text: qsTr("Maximum ellátási napok száma")
-            verticalAlignment: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            anchors.rightMargin: 0
-        }
-
-        Label {
-            id: label4
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 35
-            text: qsTr("Normáli ellátási napok száma")
-            verticalAlignment: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            anchors.rightMargin: 0
+            anchors.leftMargin: 14
+            anchors.topMargin: 50
+            columns: 2
+            rowSpacing: 4
+            Label { text: qsTr("Főcsoport"); width: hbcsForm.labelWidth; height: 35 }
+            Label { text: qsTr("lol ott van balra 01"); width: hbcsForm.valueWidth; height: 35 }
+            Label { text: qsTr("Megnevezés"); width: hbcsForm.labelWidth; }
+            TextField { text: drg.title ; width: hbcsForm.valueWidth + 150; selectByMouse: true}
+            Label { text: qsTr("Csoport kód"); width: hbcsForm.labelWidth }
+            TextField { text: drg.code; width: hbcsForm.valueWidth; selectByMouse: true}
         }
     }
+    
+    Rectangle {
+        id: attributes
+        anchors.top: hbcs.bottom
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: hbcs.horizontalCenter
+        anchors.margins: 40
+        anchors.bottomMargin: 80
+        width: hbcs.width
+        color: Nord.softBackground
+        SectionTitle {
+            id: attributesTitle
+            anchors.top: parent.top
+            anchors.left: parent.left
+            width: hbcs.width
+            title: qsTr("Attribútumok")
+        }
+        Column {
+            id: attributesForm
+            width: 288
+            height: 215
+            anchors.left: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.leftMargin: -70
+            spacing: 15
+            anchors.topMargin: 72
+            TextField {
+                id: textField
+                height: 35
+                text: drg.simpleTitle
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                selectByMouse: true
+            }
+    
+            TextField {
+                id: textField1
+                height: 35
+                text: drg.weight
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                selectByMouse: true
+            }
+    
+            TextField {
+                id: textField2
+                height: 35
+                text: drg.minDay
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                selectByMouse: true
+            }
+    
+            TextField {
+                id: textField3
+                height: 35
+                text: drg.maxDay
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                selectByMouse: true
+            }
+    
+            TextField {
+                id: textField4
+                height: 35
+                text: drg.normativeDay
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                selectByMouse: true
+            }
+    
+        }
+    
+        Column {
+            id: column
+            x: 57
+            width: 149
+            height: 400
+            anchors.right: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 72
+            anchors.rightMargin: 114
+            spacing: 15
 
+            Label {
+                id: label
+                height: 35
+                text: qsTr("Laikus megnevezés ")
+                anchors.left: parent.left
+                anchors.right: parent.right
+                verticalAlignment: Text.AlignVCenter
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+            }
+    
+            Label {
+                id: label1
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 35
+                text: qsTr("Súly: ")
+                verticalAlignment: Text.AlignVCenter
+                anchors.rightMargin: 0
+            }
+    
+            Label {
+                id: label2
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 35
+                text: qsTr("Minimum ellátási napok száma")
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                anchors.rightMargin: 0
+            }
+    
+            Label {
+                id: label3
+                width: 120
+                height: 35
+                text: qsTr("Maximum ellátási napok száma")
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                anchors.rightMargin: 0
+            }
+    
+            Label {
+                id: label4
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 35
+                text: qsTr("Normáli ellátási napok száma")
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                anchors.rightMargin: 0
+            }
+        }
+    
+    }
+
+    Row {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: 40
+        anchors.bottomMargin: 20
+        spacing: 5
+        Button { id: resetButton; text: qsTr("Visszaállítás")}
+        Button { id: saveButton; text: qsTr("Mentés"); highlighted: true }
+    }
+    }
 }
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}D{i:1}D{i:8}
+    D{i:0;autoSize:true;height:480;width:640}
 }
 ##^##*/

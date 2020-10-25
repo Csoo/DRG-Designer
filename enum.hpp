@@ -17,6 +17,7 @@ class Type : public QObject
             DRG_TYPE,
             ICD11,
             BNO10,
+            AXIS
         };
         Q_ENUMS(CodeType)
 };

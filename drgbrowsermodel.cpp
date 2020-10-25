@@ -297,7 +297,7 @@ void DRGBrowserModel::loadDrgEntities(int drgId)
         while (drgQuery.next()) {
             DRG *drg = new DRG(drgQuery.value(0).toInt(), drgQuery.value(1).toString(), drgQuery.value(2).toString());
             TreeItem *type = new TreeItem(Type::DRG_TYPE, drgQuery.value(3).toInt(), drgQuery.value(4).toString());
-            ICD11 *icd = new ICD11(drgQuery.value(5).toInt(), drgQuery.value(6).toString(), drgQuery.value(7).toString());
+            ICD11 *icd = new ICD11(drgQuery.value(5).toInt(), 0, drgQuery.value(6).toString(), drgQuery.value(7).toString());
             if (currentDrg != drgQuery.value(0).toInt()) {
                 drgIdx++;
                 typeIdx = 0;
@@ -356,34 +356,49 @@ QVector<QModelIndex> DRGBrowserModel::getItemIndexes(const QModelIndex &index) c
     return nodes;
 }
 
-QVector<QModelIndex> DRGBrowserModel::getAjusencyVector(const QModelIndex &index) const
+void DRGBrowserModel::setDrgAttributes(const QModelIndex &chapterIndex)
 {
-//    if (getItem(index)->childCount() == 0) {
-//        return QVector<QModelIndex>();
-//    }
+    TreeItem *chapter = this->getItem(chapterIndex);
+    QSqlQuery query = db->listDrgEntities(chapter->getId());
+    while (query.next()) {
+        int childIdx = chapter->findChildrenById(query.value(0).toInt());
+        if (childIdx != -1) {
+            qDebug() << "setting drg attributes for: " << query.value(0).toInt();
+            TreeItem  *base = chapter->getChildItems()[childIdx];
+            DRG *drg = dynamic_cast<DRG*>(base);
+            if (drg) {
+                drg->setAttributes(query.value(6).toInt(),
+                                   query.value(7).toInt(),
+                                   query.value(8).toInt(),
+                                   query.value(9).toFloat(),
+                                   query.value(5).toString());
+            }
+        }
+    }
+}
 
-//    TreeItem *item = this->getItem(index);
-//    QModelIndex childIdx;
-//    QModelIndex itemIdx = index;
-//    int currentNode = 1;
-//    QVector<QModelIndex> adjVector;
-//    QVector<QModelIndex> nodeList { itemIdx };
-
-//    while (!nodeList.isEmpty()) {
-//        for (auto child : item->getChildItems()) {
-//            adjVector[currentNode] = itemIdx;
-//            currentNode++;
-//            childIdx = createIndex(child->row(), 0, child);
-//            nodeList.append(childIdx);
-//        }
-//        nodeList.pop_front();
-//        item = getItem(nodeList.first());
-//        itemIdx = createIndex(item->row(), 0, item);
-//    }
-
-//    foreach (auto item, adjVector) {
-//        qDebug() << getItem(item)->getCode();
-//    }
-
-//    return adjVector;
+void DRGBrowserModel::loadPostCoord(unsigned int id, int type)
+{
+    int currentAxisId = -1;
+    int axisIdx = 0;
+    QSqlQuery icdQuery = db->listIcdLinea(id, type)[0];
+    QSqlQuery postCoordQuery = db->listIcdLinea(id, type)[1];
+    qDebug() << "loading post-coordinations..";
+    beginResetModel();
+    while (postCoordQuery.next()) {
+        TreeItem *axis = new TreeItem(Type::AXIS, postCoordQuery.value(1).toInt(), "AXIS", postCoordQuery.value(2).toString());
+        ICD11 *icd = new ICD11(postCoordQuery.value(5).toInt(),
+                               postCoordQuery.value(6).toInt(),
+                               postCoordQuery.value(7).isNull() ? postCoordQuery.value(8).toString() : postCoordQuery.value(7).toString(),
+                               postCoordQuery.value(10).toString());
+        if (currentAxisId != postCoordQuery.value(1).toInt()) {
+            currentAxisId = postCoordQuery.value(1).toInt();
+            axisIdx = 0;
+            axis->appendChild(icd);
+            rootItem->appendChild(axis);
+        } else {
+            rootItem->child(axisIdx)->appendChild(icd);
+            axisIdx++;
+        }
+    }
 }

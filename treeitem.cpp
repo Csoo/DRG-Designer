@@ -74,6 +74,7 @@ QString TreeItem::getTitle() const
 void TreeItem::setTitle(const QString &value)
 {
     title = value;
+    propertiesChanged();
 }
 
 QVariant TreeItem::data(int index) const
@@ -96,6 +97,7 @@ QString TreeItem::getCode() const
 void TreeItem::setCode(const QString &value)
 {
     code = value;
+    propertiesChanged();
 }
 
 void TreeItem::setParentItem(TreeItem *parentItem)
@@ -106,6 +108,16 @@ void TreeItem::setParentItem(TreeItem *parentItem)
 QList<TreeItem *> TreeItem::getChildItems() const
 {
     return m_childItems;
+}
+
+int TreeItem::findChildrenById(unsigned int id) const
+{
+    int i = 0;
+    while (i < m_childItems.size() && m_childItems[i]->getId() != id) {
+        i++;
+    }
+
+    return i < m_childItems.size() ? i : -1;
 }
 
 unsigned int TreeItem::getId() const
@@ -146,6 +158,7 @@ bool TreeItem::insertChildren(int row, int count)
 void TreeItem::setId(unsigned int value)
 {
     id = value;
+    propertiesChanged();
 }
 
 int TreeItem::getType() const
@@ -156,4 +169,5 @@ int TreeItem::getType() const
 void TreeItem::setType(int value)
 {
     type = value;
+    propertiesChanged();
 }

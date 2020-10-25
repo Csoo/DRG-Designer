@@ -4,6 +4,7 @@ import "./NordStyle"
 
 Item {
     id: item1
+    property var index: undefined
     PostCoordTree {
         id: postCoordTree
         anchors.right: parent.right
@@ -13,6 +14,9 @@ Item {
         anchors.bottomMargin: 70
         anchors.topMargin: 60
         width: 250
+        Component.onCompleted: {
+           // postCoordModel
+        }
     }
     Item {
         id: item2

@@ -13,6 +13,7 @@ TreeView {
     signal drgClicked(var index)
     signal chapterClicked(var index)
     signal icdClicked(var index)
+    signal typeClicked(var index)
 
     Component.onCompleted: {
         treeModel.loadDrgEntities(drgId)
@@ -76,6 +77,10 @@ TreeView {
             console.log("icd expanded", treeModel.getId(index))
             treeModel.loadIcd(treeModel.getId(index), index)
         }
+
+        if (treeModel.getType(index) === Type.DRG_CAPTER) {
+            treeModel.setDrgAttributes(index)
+        }
     }
 
     onClicked: {
@@ -83,6 +88,7 @@ TreeView {
             case Type.DRG_CAPTER: chapterClicked(index); break;
             case Type.DRG: drgClicked(index); break;
             case Type.ICD11: icdClicked(index); break;
+            case Type.DRG_TYPE: typeClicked(index); break;
         }
     }
 

@@ -1,5 +1,33 @@
 #include "drg.h"
 
+QString DRG::getSimpleTitle() const
+{
+    return simpleTitle;
+}
+
+
+float DRG::getWeight() const
+{
+    return weight;
+}
+
+
+float DRG::getNormativeDay() const
+{
+    return normativeDay;
+}
+
+unsigned int DRG::getMaxDay() const
+{
+    return maxDay;
+}
+
+
+unsigned int DRG::getMinDay() const
+{
+    return minDay;
+}
+
 DRG::DRG()
 {
 
@@ -28,5 +56,10 @@ void DRG::setAttributes(unsigned int minDay, unsigned int maxDay, float normativ
 
 void DRG::setAttributesFromModel(const QModelIndex &index)
 {
-    title = model->getItem(index)->getTitle();
+    DRG *d = dynamic_cast<DRG*>(model->getItem(index));
+    title = d->getTitle();
+    code = d->getCode();
+    setAttributes(d->getMinDay(), d->getMaxDay(), d->getNormativeDay(), d->getWeight(), d->getSimpleTitle());
+    propertiesChanged();
+    attributeChanged();
 }

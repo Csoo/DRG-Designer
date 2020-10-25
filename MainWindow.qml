@@ -28,7 +28,15 @@ Item {
                 Loader {
                     id: detailsLoader
                     anchors.fill: parent
-                    source: "DRGDetails.qml"
+                    asynchronous: true
+                    sourceComponent: Component {
+                        Label {
+                            anchors.fill: parent
+                            anchors.topMargin: 40
+                            padding: 14
+                            text: qsTr("Válaszon ki egy elemet a szerkesztés megkezdéséhez!")
+                        }
+                    }
                 }
             }
             Item {
@@ -110,10 +118,10 @@ Item {
             }
             onMouseXChanged: {
                 if (drag.active) {
-                    var newWidth = mouseX + treeView.width - 6
+                    var newWidth = mouseX + 2 * treeView.width - 6
                     treeView.width = newWidth < treeView.maxWidth ? newWidth > treeView.minWidth ? newWidth : treeView.minWidth : treeView.maxWidth
                 }
-                treeView.x = 0
+                //treeView.x = 0
             }
             cursorShape: containsMouse ? Qt.SplitHCursor : Qt.ArrowCursor
         }
@@ -123,7 +131,7 @@ Item {
             drg.setAttributesFromModel(index)
             detailsLoader.source = "DRGDetails.qml"
             tabBar.currentIndex = 0
-            graph.addNodes(treeModel.getItemIndexes(index))
+            //graph.addNodes(treeModel.getItemIndexes(index))
         }
         onChapterClicked: {
             bno11Button.enabled = false
@@ -134,7 +142,7 @@ Item {
         onIcdClicked: {
             icd.setAttributesFromModel(index)
             bno11Button.enabled = true
-            detailsLoader.source = "ICDDetails.qml"
+            detailsLoader.setSource("ICDDetails.qml", { "index": index })
             //graph.addNode(icd.getCode())
         }
     }

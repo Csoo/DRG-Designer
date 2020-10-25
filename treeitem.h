@@ -9,6 +9,11 @@
 class TreeItem : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(QString title READ getTitle NOTIFY propertiesChanged)
+    Q_PROPERTY(QString code READ getCode NOTIFY propertiesChanged)
+    Q_PROPERTY(unsigned int id READ getId NOTIFY propertiesChanged)
+    Q_PROPERTY(int type READ getType NOTIFY propertiesChanged)
 public:
     TreeItem();
     explicit TreeItem(int type, unsigned int id = 0, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);
@@ -32,6 +37,7 @@ public:
     void setParentItem(TreeItem *parentItem);
 
     QList<TreeItem *> getChildItems() const;
+    int findChildrenById(unsigned int id) const;
 
     Q_INVOKABLE unsigned int getId() const;
 
@@ -40,6 +46,8 @@ public:
 
     int getType() const;
     void setType(int value);
+signals:
+    void propertiesChanged();
 
 protected:
     int type;

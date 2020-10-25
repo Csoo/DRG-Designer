@@ -5,8 +5,9 @@ ICD11::ICD11()
 
 }
 
-ICD11::ICD11(unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
-    TreeItem(Type::ICD11, id, code, title, parentItem)
+ICD11::ICD11(unsigned int id, int conceptType, const QString &code, const QString &title, TreeItem *parentItem):
+    TreeItem(Type::ICD11, id, code, title, parentItem),
+    coneptType(conceptType)
 {
 
 }
