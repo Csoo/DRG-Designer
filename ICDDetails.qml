@@ -5,6 +5,11 @@ import "./NordStyle"
 Item {
     id: item1
     property var index: undefined
+
+    onIndexChanged: {
+        postCoordModel.loadPostCoord(icd.id, 0)
+    }
+
     PostCoordTree {
         id: postCoordTree
         anchors.right: parent.right

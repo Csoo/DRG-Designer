@@ -381,10 +381,14 @@ void DRGBrowserModel::loadPostCoord(unsigned int id, int type)
 {
     int currentAxisId = -1;
     int axisIdx = 0;
-    QSqlQuery icdQuery = db->listIcdLinea(id, type)[0];
-    QSqlQuery postCoordQuery = db->listIcdLinea(id, type)[1];
+    QList<QSqlQuery> queries = db->listIcdLinea(id, type);
+    QSqlQuery icdQuery = queries[0];
+    QSqlQuery postCoordQuery = queries[1];
     qDebug() << "loading post-coordinations..";
     beginResetModel();
+
+    rootItem->removeChildren(0, rootItem->childCount());
+
     while (postCoordQuery.next()) {
         TreeItem *axis = new TreeItem(Type::AXIS, postCoordQuery.value(1).toInt(), "AXIS", postCoordQuery.value(2).toString());
         ICD11 *icd = new ICD11(postCoordQuery.value(5).toInt(),
@@ -401,4 +405,5 @@ void DRGBrowserModel::loadPostCoord(unsigned int id, int type)
             axisIdx++;
         }
     }
+    endResetModel();
 }
