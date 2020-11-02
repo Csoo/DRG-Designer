@@ -25,19 +25,26 @@ TreeView {
         model: treeModel
     }
     headerDelegate: Rectangle {
-        width: 60
         height: 30
-        color: "#f21111"
-        radius: 1
-        border.color: "#0052d9"
-        border.width: 2
-        Text {text: styleData.value ; elide: Text.ElideLeft; anchors.fill: parent;horizontalAlignment: Text.AlignLeft;verticalAlignment: Text.AlignTop ;minimumPixelSize: 5}
+        color: Nord.background
+        QQC2.Label {text: styleData.value; color: Nord.frost; padding: 5; elide: Text.ElideLeft; anchors.fill: parent; horizontalAlignment: Text.AlignLeft; verticalAlignment: Text.AlignVCenter; minimumPixelSize: 5}
+        Rectangle {
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            height: 28
+            width: 2
+            color: Nord.softBackground
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.SplitHCursor
+            }
+        }
     }
     itemDelegate: Text {
         text: styleData.value
         color: styleData.textColor
-        elide: styleData.elideMode
-        wrapMode: Text.WordWrap
+        elide: Text.ElideRight
     }
     rowDelegate: Rectangle {
         id: rowBackground
@@ -122,7 +129,7 @@ TreeView {
         width: 300
     }
 
-
+    Item {
     QQC2.Menu {
         id: contextMenu
         property bool isChapter: false
@@ -160,5 +167,6 @@ TreeView {
             implicitHeight: 28 * contextMenu.count
             radius: 2
         }
+    }
     }
 }

@@ -41,7 +41,7 @@ Item {
                 Connections {
                     target: detailsLoader.item
                     ignoreUnknownSignals: true
-                    onIcd11Selected: graph.addNodes(postCoordModel.getItemIndexes(index))
+                    function onIcd11Selected(index){ graph.addNodes(postCoordModel.getItemIndexes(index)) }
                 }
             }
             Item {
@@ -111,6 +111,8 @@ Item {
             anchors.bottomMargin: 0
             anchors.topMargin: 0
 
+            property var prevMouseX: 0
+
             hoverEnabled: true
 
             width: 6
@@ -121,14 +123,23 @@ Item {
                 axis: Drag.XAxis
                 smoothed: false
             }
+            onPressed: {
+                prevMouseX = mouseX
+            }
             onMouseXChanged: {
                 if (drag.active) {
-                    var newWidth = mouseX + 2 * treeView.width - 6
-                    treeView.width = newWidth < treeView.maxWidth ? newWidth > treeView.minWidth ? newWidth : treeView.minWidth : treeView.maxWidth
+                    var newWidth = treeView.width + (mouseX - prevMouseX)
+                    //treeView.width = newWidth < treeView.maxWidth ? newWidth > treeView.minWidth ? newWidth : treeView.minWidth : treeView.maxWidth
+                    if (newWidth < treeView.maxWidth)
+                        if (newWidth > treeView.minWidth)
+                            treeView.width = newWidth
+                        else
+                            treeView.width = treeView.minWidth
+                    else
+                        treeView.width = treeView.maxWidth
                 }
-                //treeView.x = 0
             }
-            cursorShape: containsMouse ? Qt.SplitHCursor : Qt.ArrowCursor
+            cursorShape: Qt.SplitHCursor
         }
 
         onDrgClicked: {

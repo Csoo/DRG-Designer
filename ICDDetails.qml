@@ -73,11 +73,11 @@ Item {
 //                    popup.open()
             }
             onAccepted: {
-                listModel.loadIcd11(editText)
+                listModel.loadIcd11(searchBar.editText)
             }
 
             onCurrentValueChanged: {
-                item1.icd11Selected(currentValue)
+                //item1.icd11Selected(currentValue)
                 fullCode.text = currentValue
                 postCoordModel.loadPostCoord(currentValue, 0)
             }

@@ -8,6 +8,7 @@ ApplicationWindow {
     width: 600
     height: 400
     title: qsTr("HBCs Tervező")
+    //flags: Qt.FramelessWindowHint | Qt.Window
 
     Component.onCompleted: {
         treeModel.connectToDatabase()

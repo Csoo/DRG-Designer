@@ -15,6 +15,11 @@ TreeView {
 
     onClicked: {
         postCoordModel.loadChildren(postCoordModel.getId(index), 0, index)
+        if (postCoordModel.getType(index) === Type.AXIS)
+            selection.select(index, ItemSelectionModel.NoUpdate)
+        else
+            selection.select(index, ItemSelectionModel.Toggle)
+        //sele
     }
 
     selection: ItemSelectionModel {
@@ -31,10 +36,15 @@ TreeView {
     rowDelegate: Rectangle {
         id: rowBackground
         anchors.verticalCenter: parent.verticalCenter
-        color: styleData.selected ? Nord.accent : "transparent"
+        color: {
+            if (postCoordModel.getType(postCoordModel.index(styleData.row, 0)) === Type.AXIS)
+                return Nord.accent
+            else
+                return "transparent"
+        }
     }
 
-    selectionMode: SelectionMode.MultiSelection
+    selectionMode: SelectionMode.NoSelection
 
     model: postCoordModel
 
