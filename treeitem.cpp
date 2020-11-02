@@ -40,6 +40,11 @@ bool TreeItem::removeChildren(int from, int count)
 
 TreeItem *TreeItem::child(int row)
 {
+    if (row < 0 || row >= m_childItems.size()) {
+        qWarning("No child #%d for %s", row, title.toLatin1().data());
+        return new TreeItem();
+    }
+
     return m_childItems.value(row);
 }
 

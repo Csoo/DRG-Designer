@@ -7,23 +7,18 @@ Item {
     ScrollView {
     anchors.fill: parent
     clip: true
-    Rectangle {
+    Section {
         id: hbcs
+        title: qsTr("Homogén Betegség Csoport")
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.leftMargin: 40
         anchors.rightMargin: 40
         anchors.topMargin: 70
-        height: 180
+        height: hbcsForm.height + 70
         color: Nord.softBackground
-        SectionTitle {
-            id: hbcsTitle
-            anchors.top: parent.top
-            anchors.left: parent.left
-            width: hbcs.width
-            title: qsTr("Homogén Betegség Csoport")
-        }
+        clip: true
         Grid {
             id: hbcsForm
             property int labelWidth: 200
@@ -44,8 +39,9 @@ Item {
         }
     }
     
-    Rectangle {
+    Section {
         id: attributes
+        title: qsTr("Attribútumok")
         anchors.top: hbcs.bottom
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: hbcs.horizontalCenter
@@ -53,17 +49,11 @@ Item {
         anchors.bottomMargin: 80
         width: hbcs.width
         color: Nord.softBackground
-        SectionTitle {
-            id: attributesTitle
-            anchors.top: parent.top
-            anchors.left: parent.left
-            width: hbcs.width
-            title: qsTr("Attribútumok")
-        }
+        clip: true
+        height: attributesForm.height
         Column {
             id: attributesForm
             width: 288
-            height: 215
             anchors.left: parent.horizontalCenter
             anchors.top: parent.top
             anchors.leftMargin: -70

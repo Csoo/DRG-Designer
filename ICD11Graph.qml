@@ -31,7 +31,7 @@ Item {
             for (var j = 0; j < i; j++) {
                 if (treeModel.isParent(idxArray[j], idxArray[i])) {
                     parent = nodeArray[j]
-                    var edge = graph.insertEdge(nodeArray[i], nodeArray[j])
+                    var edge = graph.insertEdge(nodeArray[j], nodeArray[i])
                 }
                 xPos = parent.item.x + 200
                 yPos = parent.item.y

@@ -6,20 +6,35 @@ import TypeEnum 1.0
 import "./NordStyle"
 
 TreeView {
+    signal postCoordSelectionChanged(var selectedIndexes)
+
     backgroundVisible: false
     headerVisible: false
     frameVisible: false
+    horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
+    onClicked: {
+        postCoordModel.loadChildren(postCoordModel.getId(index), 0, index)
+    }
+
+    selection: ItemSelectionModel {
+        model: postCoordModel
+        onSelectionChanged: {
+            postCoordSelectionChanged(selectedIndexes)
+        }
+    }
     itemDelegate: Text {
         text: styleData.value
         color: Nord.frost
-        elide: styleData.elideMode
+        elide: Text.ElideNone
     }
     rowDelegate: Rectangle {
         id: rowBackground
         anchors.verticalCenter: parent.verticalCenter
         color: styleData.selected ? Nord.accent : "transparent"
     }
+
+    selectionMode: SelectionMode.MultiSelection
 
     model: postCoordModel
 
@@ -41,20 +56,12 @@ TreeView {
         }
     }
 
-    contentHeader: Label {
-            text: qsTr("Utókoordinációk")
-            elide: Text.ElideLeft
-            font.pointSize: 12
-            bottomPadding: 14
-            color: Nord.accent
-    }
-
     TableViewColumn {
         role: "code"
         width: 100
     }
     TableViewColumn {
         role: "title"
-        width: 300
+        width: 400
     }
 }

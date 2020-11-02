@@ -73,6 +73,7 @@ public:
     Q_INVOKABLE QVector<QModelIndex> getItemIndexes(const QModelIndex &index) const;
     Q_INVOKABLE void setDrgAttributes(const QModelIndex &chapterIndex);
     Q_INVOKABLE void loadPostCoord(unsigned int id, int type);
+    Q_INVOKABLE void loadChildren(unsigned int id, int type, const QModelIndex &parent);
 private:
 
     Database *db;

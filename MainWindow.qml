@@ -38,6 +38,11 @@ Item {
                         }
                     }
                 }
+                Connections {
+                    target: detailsLoader.item
+                    ignoreUnknownSignals: true
+                    onIcd11Selected: graph.addNodes(postCoordModel.getItemIndexes(index))
+                }
             }
             Item {
                 id: graphTab
@@ -140,6 +145,7 @@ Item {
 
         }
         onIcdClicked: {
+            console.log(treeModel.getCode(index), treeModel.getId(index), treeModel.getTitle(index))
             icd.setAttributesFromModel(index)
             bno11Button.enabled = true
             detailsLoader.setSource("ICDDetails.qml", { "index": index })

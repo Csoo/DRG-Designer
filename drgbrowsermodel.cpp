@@ -268,54 +268,32 @@ void DRGBrowserModel::loadDrgEntities(int drgId)
         rootItem->appendChild(chapter);
     }
 
-//    for (auto chapter : rootItem->getChildItems()) {
-//        QSqlQuery entityQuery = db->listDrgEntities(chapter->getId());
-//        while (entityQuery.next()) {
-//            DRG *entity = new DRG(entityQuery.value(0).toInt(), entityQuery.value(3).toString(),
-//                                  entityQuery.value(4).toString());
-//            entity->setAttributes(entityQuery.value(6).toInt(), entityQuery.value(7).toInt(), entityQuery.value(8).toInt(),entityQuery.value(9).toInt(), entityQuery.value(5).toString());
-//            //entity->appendChild(new ICD11);
-//            chapter->appendChild(entity);
-//        }
-
-////        for (auto drg : chapter->getChildItems()) {
-////            QSqlQuery typeQuery = db->listDrgTypes(drg->getId());
-////            while (typeQuery.next()) {
-////                TreeItem *type = new TreeItem(Type::DRG_TYPE);
-////                type->setTitle(typeQuery.value(1).toString());
-////                type->setId(typeQuery.value(0).toInt());
-////                drg->appendChild(type);
-////            }
-////        }
-//    }
-
     for (auto chapter : rootItem->getChildItems()) {
         QSqlQuery drgQuery = db->listOrderedDrgBno(chapter->getId());
-        drgQuery.next();
-        int currentDrg = 0, currentType = 0;
+        unsigned int currentDrg = -1, currentType = -1;
         int typeIdx = 0, drgIdx = -1;
         while (drgQuery.next()) {
             DRG *drg = new DRG(drgQuery.value(0).toInt(), drgQuery.value(1).toString(), drgQuery.value(2).toString());
             TreeItem *type = new TreeItem(Type::DRG_TYPE, drgQuery.value(3).toInt(), drgQuery.value(4).toString());
             ICD11 *icd = new ICD11(drgQuery.value(5).toInt(), 0, drgQuery.value(6).toString(), drgQuery.value(7).toString());
-            if (currentDrg != drgQuery.value(0).toInt()) {
-                drgIdx++;
+            if (currentDrg != drg->getId()) {
                 typeIdx = 0;
+                drgIdx++;
                 currentDrg = drgQuery.value(0).toInt();
                 currentType = drgQuery.value(3).toInt();
-                type->appendChild(icd);
-                drg->appendChild(type);
                 chapter->appendChild(drg);
+                if (!drgQuery.value(3).isNull())
+                    chapter->child(drgIdx)->appendChild(type);
             } else {
-                if (currentType != drgQuery.value(3).toInt()) {
+                if (currentType != type->getId()) {
                     typeIdx++;
                     currentType = drgQuery.value(3).toInt();
-                    chapter->child(drgIdx)->appendChild(type);
-                } else {
-                    chapter->child(drgIdx)->child(typeIdx)->appendChild(icd);
+                    if (!drgQuery.value(3).isNull())
+                        chapter->child(drgIdx)->appendChild(type);
                 }
-                drgId++;
             }
+            if (!drgQuery.value(5).isNull())
+                chapter->child(drgIdx)->child(typeIdx)->appendChild(icd);
         }
     }
 
@@ -363,7 +341,6 @@ void DRGBrowserModel::setDrgAttributes(const QModelIndex &chapterIndex)
     while (query.next()) {
         int childIdx = chapter->findChildrenById(query.value(0).toInt());
         if (childIdx != -1) {
-            qDebug() << "setting drg attributes for: " << query.value(0).toInt();
             TreeItem  *base = chapter->getChildItems()[childIdx];
             DRG *drg = dynamic_cast<DRG*>(base);
             if (drg) {
@@ -380,30 +357,45 @@ void DRGBrowserModel::setDrgAttributes(const QModelIndex &chapterIndex)
 void DRGBrowserModel::loadPostCoord(unsigned int id, int type)
 {
     int currentAxisId = -1;
-    int axisIdx = 0;
-    QList<QSqlQuery> queries = db->listIcdLinea(id, type);
+    int axisIdx = -1;
+    QList<QSqlQuery> queries = db->listIcd11Linea(id, type);
     QSqlQuery icdQuery = queries[0];
     QSqlQuery postCoordQuery = queries[1];
-    qDebug() << "loading post-coordinations..";
+    qDebug() << "id: " << id << type << "loading post-coordinations..";
     beginResetModel();
 
     rootItem->removeChildren(0, rootItem->childCount());
 
     while (postCoordQuery.next()) {
-        TreeItem *axis = new TreeItem(Type::AXIS, postCoordQuery.value(1).toInt(), "AXIS", postCoordQuery.value(2).toString());
+        TreeItem *axis = new TreeItem(Type::AXIS, postCoordQuery.value(1).toInt(), postCoordQuery.value(2).toString(), "");
         ICD11 *icd = new ICD11(postCoordQuery.value(5).toInt(),
                                postCoordQuery.value(6).toInt(),
                                postCoordQuery.value(7).isNull() ? postCoordQuery.value(8).toString() : postCoordQuery.value(7).toString(),
                                postCoordQuery.value(10).toString());
         if (currentAxisId != postCoordQuery.value(1).toInt()) {
             currentAxisId = postCoordQuery.value(1).toInt();
-            axisIdx = 0;
+            axisIdx++;
             axis->appendChild(icd);
             rootItem->appendChild(axis);
         } else {
             rootItem->child(axisIdx)->appendChild(icd);
-            axisIdx++;
         }
     }
     endResetModel();
+}
+
+void DRGBrowserModel::loadChildren(unsigned int id, int type, const QModelIndex &parent)
+{
+    qDebug() << "postchild loading" << id << type;
+    TreeItem *parentItem = this->getItem(parent);
+    QSqlQuery query = db->getPostcoordinationChild(id, type);
+    if (parentItem->childCount() == 0) {
+        while (query.next()) {
+            ICD11 *icd = new ICD11(query.value(0).toInt(), query.value(1).toInt(),
+                      query.value(2).toString(),
+                      query.value(5).toString());
+            insertRows(parentItem->row(), 1, parent);
+            parentItem->appendChild(icd);
+        }
+    }
 }

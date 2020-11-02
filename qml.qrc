@@ -13,6 +13,6 @@
         <file>DRGDetails.qml</file>
         <file>ICDDetails.qml</file>
         <file>PostCoordTree.qml</file>
-        <file>SectionTitle.qml</file>
+        <file>Section.qml</file>
     </qresource>
 </RCC>
