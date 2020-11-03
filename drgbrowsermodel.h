@@ -74,12 +74,16 @@ public:
     Q_INVOKABLE void setDrgAttributes(const QModelIndex &chapterIndex);
     Q_INVOKABLE void loadPostCoord(unsigned int id, int type);
     Q_INVOKABLE void loadChildren(unsigned int id, int type, const QModelIndex &parent);
+    Q_INVOKABLE bool isSelected(const QModelIndex &item);
+    Q_INVOKABLE void setSelectedIndexes(const QModelIndexList &value);
+
 private:
 
     Database *db;
     QString dbError;
 
     TreeItem *rootItem;
+    QModelIndexList selectedIndexes;
     QHash<int, QByteArray> m_roleNameMapping;
 };
 

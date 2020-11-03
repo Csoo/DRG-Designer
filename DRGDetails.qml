@@ -31,7 +31,7 @@ Item {
             columns: 2
             rowSpacing: 4
             Label { text: qsTr("Főcsoport"); width: hbcsForm.labelWidth; height: 35 }
-            Label { text: qsTr("lol ott van balra 01"); width: hbcsForm.valueWidth; height: 35 }
+            Label { text: drg.chapter ; width: hbcsForm.valueWidth; height: 35 }
             Label { text: qsTr("Megnevezés"); width: hbcsForm.labelWidth; }
             TextField { text: drg.title ; width: hbcsForm.valueWidth + 150; selectByMouse: true}
             Label { text: qsTr("Csoport kód"); width: hbcsForm.labelWidth }
@@ -53,10 +53,10 @@ Item {
         height: attributesForm.height
         Column {
             id: attributesForm
-            width: 288
-            anchors.left: parent.horizontalCenter
+            width: parent.width
+            anchors.left: parent.left
             anchors.top: parent.top
-            anchors.leftMargin: -70
+            anchors.leftMargin: 14
             spacing: 15
             anchors.topMargin: 72
             TextField {

@@ -27,7 +27,7 @@ Item {
             id: postCoordTree
             anchors{
                 fill: parent
-                topMargin: 50
+                topMargin: 60
                 leftMargin: 14
             }
             Component.onCompleted: {
@@ -59,6 +59,12 @@ Item {
         anchors.topMargin: 60
         ComboBox {
             id: searchBar
+            anchors{
+                top: parent.top
+                left: parent.left
+                topMargin: 60
+                leftMargin: 14
+            }
             model: listModel
             width: 250
             height: 28
@@ -117,6 +123,12 @@ Item {
 
         Label {
             id: fullCode
+            anchors{
+                top: searchBar.bottom
+                left: parent.left
+                topMargin: 40
+                leftMargin: 14
+            }
             x: 0
             y: 34
             width: 215

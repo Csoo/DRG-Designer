@@ -399,3 +399,13 @@ void DRGBrowserModel::loadChildren(unsigned int id, int type, const QModelIndex 
         }
     }
 }
+
+bool DRGBrowserModel::isSelected(const QModelIndex &itemIdx)
+{
+    return selectedIndexes.indexOf(itemIdx) != -1;
+}
+
+void DRGBrowserModel::setSelectedIndexes(const QModelIndexList &value)
+{
+    selectedIndexes = value;
+}

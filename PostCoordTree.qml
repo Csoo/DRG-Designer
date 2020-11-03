@@ -6,6 +6,7 @@ import TypeEnum 1.0
 import "./NordStyle"
 
 TreeView {
+    id: postCoordTree
     signal postCoordSelectionChanged(var selectedIndexes)
 
     backgroundVisible: false
@@ -26,22 +27,31 @@ TreeView {
         model: postCoordModel
         onSelectionChanged: {
             postCoordSelectionChanged(selectedIndexes)
+            postCoordModel.setSelectedIndexes(selectedIndexes)
         }
     }
-    itemDelegate: Text {
-        text: styleData.value
-        color: Nord.frost
-        elide: Text.ElideNone
+    itemDelegate: Rectangle {
+        id: itemBackground
+        color: "transparent"
+        Text {
+            id: itemDelegate
+            text: styleData.value
+            color: Nord.frost
+            elide: Text.ElideNone
+        }
+        Connections {
+            target: postCoordTree
+            function onClicked(index) {
+                if (styleData.index === index) {
+                    itemBackground.color = postCoordModel.isSelected(index) ? Nord.accent : "transparent"
+                }
+             }
+        }
     }
     rowDelegate: Rectangle {
         id: rowBackground
         anchors.verticalCenter: parent.verticalCenter
-        color: {
-            if (postCoordModel.getType(postCoordModel.index(styleData.row, 0)) === Type.AXIS)
-                return Nord.accent
-            else
-                return "transparent"
-        }
+        color: "transparent"
     }
 
     selectionMode: SelectionMode.NoSelection

@@ -11,6 +11,11 @@ float DRG::getWeight() const
     return weight;
 }
 
+QString DRG::getChapter() const
+{
+    return chapter;
+}
+
 
 float DRG::getNormativeDay() const
 {
@@ -57,8 +62,9 @@ void DRG::setAttributes(unsigned int minDay, unsigned int maxDay, float normativ
 void DRG::setAttributesFromModel(const QModelIndex &index)
 {
     DRG *d = dynamic_cast<DRG*>(model->getItem(index));
-    title = d->getTitle();
-    code = d->getCode();
+    this->title = d->getTitle();
+    this->code = d->getCode();
+    this->chapter =  d->parentItem()->getTitle();
     setAttributes(d->getMinDay(), d->getMaxDay(), d->getNormativeDay(), d->getWeight(), d->getSimpleTitle());
     propertiesChanged();
     attributeChanged();

@@ -16,12 +16,14 @@ class DRG : public TreeItem
     Q_PROPERTY(unsigned int maxDay READ getMaxDay NOTIFY attributeChanged)
     Q_PROPERTY(float normativeDay READ getNormativeDay NOTIFY attributeChanged)
     Q_PROPERTY(float weight READ getWeight NOTIFY attributeChanged)
+    Q_PROPERTY(QString chapter READ getChapter NOTIFY attributeChanged)
     Q_PROPERTY(QString simpleTitle READ getSimpleTitle NOTIFY attributeChanged)
 private:
     unsigned int minDay;
     unsigned int maxDay;
     float normativeDay;
     float weight;
+    QString chapter;
     QString simpleTitle;
     DRGBrowserModel *model;
 public:
@@ -36,6 +38,8 @@ public:
     float getNormativeDay() const;
     float getWeight() const;
     QString getSimpleTitle() const;
+    QString getChapter() const;
+
 signals:
     void attributeChanged();
 };
