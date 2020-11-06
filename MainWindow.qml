@@ -64,7 +64,7 @@ Item {
             }
             TabButton {
                 id: detailsButton
-                text: qsTr("Részletek")
+                text: qsTr("Szerkesztő")
                 rightPadding: 9
                 leftPadding: 9
                 padding: 3
@@ -79,7 +79,7 @@ Item {
             TabButton {
                 id: bno11Button
                 enabled: false
-                text: qsTr("BNO-11")
+                text: qsTr("BNO-11 vizualizáció")
                 rightPadding: 9
                 leftPadding: 9
                 padding: 3

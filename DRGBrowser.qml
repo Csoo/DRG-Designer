@@ -111,22 +111,22 @@ TreeView {
                     case Type.DRG_CAPTER : contextMenu.isChapter = true; break;
                     case Type.DRG_TYPE : contextMenu.isType = true; break;
                 }
-            } else {
-                console.log("show context menu for other")
             }
             contextMenu.popup()
         }
     }
 
     TableViewColumn {
+        id: codeHeader
         role: "code"
         title: "Code"
         width: 100
     }
     TableViewColumn {
+        id: titleHeader
         role: "title"
         title: "Title"
-        width: 300
+        width: parent.width - codeHeader.width
     }
 
     Item {
@@ -134,9 +134,9 @@ TreeView {
         id: contextMenu
         property bool isChapter: false
         property bool isType: false
-        QQC2.Action { text: "Uj HBCs hozzaadasa"; enabled: contextMenu.isChapter }
-        QQC2.Action { text: "Uj ICD11 hozzaadasa"; enabled: contextMenu.isType }
-        QQC2.Action { text: "Uj focsoport hozzaadasa" }
+        QQC2.Action { text: "Új HBCs hozzáadasa"; enabled: contextMenu.isChapter }
+        QQC2.Action { text: "Új ICD11 hozzáadasa"; enabled: contextMenu.isType }
+        QQC2.Action { text: "Új főcsoport hozzáadasa" }
 
         delegate: QQC2.MenuItem {
             id: menuItem

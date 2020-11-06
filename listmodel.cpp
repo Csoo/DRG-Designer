@@ -91,3 +91,10 @@ void ListModel::loadIcd11(const QString &icd)
     endResetModel();
 }
 
+void ListModel::clear()
+{
+    beginResetModel();
+    items.clear();
+    endResetModel();
+}
+

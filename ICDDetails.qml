@@ -58,6 +58,9 @@ Item {
         anchors.left: parent.left
         anchors.topMargin: 60
         ComboBox {
+            Component.onCompleted: {
+                listModel.clear()
+            }
             id: searchBar
             anchors{
                 top: parent.top
@@ -66,7 +69,7 @@ Item {
                 leftMargin: 14
             }
             model: listModel
-            width: 250
+            width: 350
             height: 28
             y: 50
             displayText: "BNO-11 keresés"
@@ -95,7 +98,7 @@ Item {
             delegate: ItemDelegate {
                 hoverEnabled: true
                 height: searchBar.height
-                width: searchBar.width + 70
+                width: searchBar.width
                 background: Rectangle {
                     anchors.fill: parent
                     color: parent.highlighted ? Nord.accent : Nord.night

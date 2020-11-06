@@ -12,7 +12,7 @@ Item {
 
     Component.onCompleted: {
         state = "initial"
-        goToMain(1)
+        //goToMain(1)
     }
 
     transitions: [
@@ -100,7 +100,7 @@ Item {
             id: emptyErrorMsg
             anchors.fill: parent
             maximumLineCount: 2
-            text: mainItem.state == "authSuccess" ? "OK" : qsTr("Kitöltendő mezők")
+            text: mainItem.state == "authSuccess" ? qsTr("Sikeres azonosítás") : qsTr("Kitöltendő mezők")
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
@@ -375,7 +375,7 @@ Item {
             PropertyChanges {
                 target: emptyError
                 visible: true
-                width: 50
+                width: 150
             }
             PropertyChanges {
                 target: pwError

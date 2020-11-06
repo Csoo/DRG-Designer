@@ -42,6 +42,7 @@ public:
 
     Q_INVOKABLE void loadDrgs();
     Q_INVOKABLE void loadIcd11(const QString &icd);
+    Q_INVOKABLE void clear();
 
 private:
     QList<Item> items;

@@ -56,7 +56,7 @@ Item {
             width: parent.width
             anchors.left: parent.left
             anchors.top: parent.top
-            anchors.leftMargin: 14
+            anchors.leftMargin: 250
             spacing: 15
             anchors.topMargin: 72
             TextField {
@@ -121,10 +121,10 @@ Item {
             x: 57
             width: 149
             height: 400
-            anchors.right: parent.horizontalCenter
+            anchors.left: parent.left
             anchors.top: parent.top
             anchors.topMargin: 72
-            anchors.rightMargin: 114
+            anchors.leftMargin: 14
             spacing: 15
 
             Label {
