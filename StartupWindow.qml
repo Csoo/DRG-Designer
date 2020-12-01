@@ -9,35 +9,12 @@ Item {
     width: 600
     height: 400
 
-
     Component.onCompleted: {
         state = "initial"
         //goToMain(1)
     }
 
-    transitions: [
-        Transition {
-            from: "*"; to: "*"
-            NumberAnimation {
-                targets: userError
-                property: "width"
-                duration: 500
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: pwError
-                property: "width"
-                duration: 500
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: emptyError
-                property: "width"
-                duration: 500
-                easing.type: Easing.InOutQuad
-            }
-        }
-    ]
+    Keys.onReturnPressed: authButton.activate()
 
     Rectangle {
         id: pwError
@@ -46,7 +23,7 @@ Item {
         border.width: 0
         anchors.verticalCenter: password.verticalCenter
         anchors.left: password.right
-        anchors.verticalCenterOffset: 10
+        anchors.verticalCenterOffset: 11
         anchors.leftMargin: 10
         width: 0
         height: pwErrorMsg.contentHeight + 6
@@ -59,6 +36,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
             padding: 4
+            elide: Text.ElideRight
         }
     }
 
@@ -69,25 +47,26 @@ Item {
         border.width: 0
         anchors.verticalCenter: userName.verticalCenter
         anchors.left: userName.right
-        anchors.verticalCenterOffset: 10
+        anchors.verticalCenterOffset: 16
         anchors.leftMargin: 10
         width: 0
-        height: userErrorrMsg.contentHeight + 6
+        height: 40
         Label {
             id: userErrorrMsg
             anchors.fill: parent
             maximumLineCount: 2
-            text: qsTr("Adja meg a felhasználónevét!")
+            text: qsTr("Adja meg a\nfelhasználónevét!")
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
             padding: 4
+            elide: Text.ElideRight
         }
     }
 
     Rectangle {
         id: emptyError
-        color: mainItem.state == "authSuccess" ? Nord.ok : Nord.error
+        color: Nord.ok
         radius: 5
         border.width: 0
         anchors.verticalCenter: userName.verticalCenter
@@ -105,6 +84,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
             padding: 4
+            elide: Text.ElideRight
         }
     }
 
@@ -121,6 +101,7 @@ Item {
         enabled: comboBox.currentIndex != 0 && mainItem.state == "authSuccess"
         onClicked: {
             goToMain(comboBox.currentValue)
+            loadDrgConnection.stop = true
         }
     }
 
@@ -137,6 +118,7 @@ Item {
         anchors.right: parent.right
         onClicked: {
             goToMain(0)
+            loadDrgConnection.stop = true
         }
     }
 
@@ -151,7 +133,7 @@ Item {
         anchors.leftMargin: 50
         anchors.bottomMargin: 50
         onClicked: {
-            Qt.quit()
+            applicationWindows.close()
         }
     }
 
@@ -201,7 +183,17 @@ Item {
                 visible: parent.hovered && code != ""
                 x: mouse.mouseX
                 y: mouse.mouseY - contentHeight
-                text: "Utolsó módosítás: " + code
+                text: qsTr("Utolsó módosítás: ") + code
+            }
+        }
+        Connections {
+            id: loadDrgConnection
+            property bool stop: false
+            target: qmlManager
+            function onConnectionReady(success, err) {
+                if (!stop)
+                    if (success && comboBox.count == 0)
+                        listModel.loadDrgs()
             }
         }
     }
@@ -281,13 +273,41 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: 10
         enabled: mainItem.state != "authSuccess"
-        onClicked: {
+        function activate() {
             if (pwField.text == "" && userField.text == "") mainItem.state = "empty"
             else if (pwField.text == "") mainItem.state = "emptyPw"
             else if (userField.text == "") mainItem.state = "emptyUser"
             else mainItem.state = "authSuccess"
         }
+        onClicked: {
+            activate()
+        }
+
     }
+
+    transitions: [
+        Transition {
+            from: "*"; to: "*"
+            NumberAnimation {
+                targets: userError
+                property: "width"
+                duration: 300
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: pwError
+                property: "width"
+                duration: 300
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: emptyError
+                property: "width"
+                duration: 300
+                easing.type: Easing.InOutQuad
+            }
+        }
+    ]
 
     states: [
         State {
@@ -349,18 +369,18 @@ Item {
             name: "empty"
             PropertyChanges {
                 target: emptyError
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: pwError
                 visible: true
                 width: 180
             }
             PropertyChanges {
-                target: pwError
-                visible: false
-                width: 0
-            }
-            PropertyChanges {
                 target: userError
-                visible: false
-                width: 0
+                visible: true
+                width: 180
             }
         },
         State {

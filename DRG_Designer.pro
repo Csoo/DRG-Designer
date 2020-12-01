@@ -15,12 +15,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         ../icd-project/backendDatabase/database.cpp \
         drg.cpp \
-        drgbrowsermodel.cpp \
         drgchapter.cpp \
         icd11.cpp \
         listmodel.cpp \
         main.cpp \
-        treeitem.cpp
+        qmlmanager.cpp \
+        repository.cpp \
+        selection.cpp \
+        treeitem.cpp \
+        treemodel.cpp \
+        user.cpp
 
 RESOURCES += qml.qrc
 
@@ -43,12 +47,16 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ../icd-project/backendDatabase/database.h \
     drg.h \
-    drgbrowsermodel.h \
     drgchapter.h \
     enum.hpp \
     icd11.h \
     listmodel.h \
-    treeitem.h
+    qmlmanager.h \
+    repository.h \
+    selection.h \
+    treeitem.h \
+    treemodel.h \
+    user.h
 
 SUBDIRS += \
 

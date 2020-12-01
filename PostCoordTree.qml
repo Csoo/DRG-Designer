@@ -8,6 +8,7 @@ import "./NordStyle"
 TreeView {
     id: postCoordTree
     signal postCoordSelectionChanged(var selectedIndexes)
+    signal postCoordUpdated()
 
     backgroundVisible: false
     headerVisible: false
@@ -15,12 +16,14 @@ TreeView {
     horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
     onClicked: {
-        postCoordModel.loadChildren(postCoordModel.getId(index), 0, index)
-        if (postCoordModel.getType(index) === Type.AXIS)
+        //postCoordModel.loadChildren(postCoordModel.getId(index), 0, index)
+        if (postCoordModel.getType(index) === Type.AXIS || postCoordModel.getTitle(index) === "")
             selection.select(index, ItemSelectionModel.NoUpdate)
-        else
+        else {
             selection.select(index, ItemSelectionModel.Toggle)
-        //sele
+            icd.updatePostCoord(postCoordModel.getId(index), postCoordModel.getCode(index), postCoordModel.getTitle(index))
+            postCoordUpdated()
+        }
     }
 
     selection: ItemSelectionModel {
@@ -73,6 +76,13 @@ TreeView {
                 anchors.centerIn: parent
                 anchors.verticalCenterOffset: 2
             }
+        }
+    }
+
+    onExpanded: {
+        console.log(index)
+        if (postCoordModel.isEmpty(index)) {
+            postCoordModel.loadChildren(index)
         }
     }
 

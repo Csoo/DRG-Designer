@@ -16,7 +16,10 @@ TreeView {
     signal typeClicked(var index)
 
     Component.onCompleted: {
-        treeModel.loadDrgEntities(drgId)
+        if (drgId != 0) {
+            qmlManager.stopConnection(Type.PAUSE)
+            treeModel.loadDrgEntities(drgId)
+        }
     }
     id: treeView
     alternatingRowColors: true
@@ -44,7 +47,12 @@ TreeView {
     itemDelegate: Text {
         text: styleData.value
         color: styleData.textColor
-        elide: Text.ElideRight
+        elide: Text.ElideNone
+        font.bold: {
+            if (treeModel.getType(styleData.index) === Type.ICD11)
+                return !treeModel.isApproved(styleData.index)
+            return false
+        }
     }
     rowDelegate: Rectangle {
         id: rowBackground
@@ -79,10 +87,9 @@ TreeView {
     }
 
     onExpanded: {
-        console.log("expanded")
         if (treeModel.isEmpty(index) && treeModel.getType(index) === Type.ICD11) {
             console.log("icd expanded", treeModel.getId(index))
-            treeModel.loadIcd(treeModel.getId(index), index)
+
         }
 
         if (treeModel.getType(index) === Type.DRG_CAPTER) {

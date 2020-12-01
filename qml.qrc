@@ -14,5 +14,7 @@
         <file>ICDDetails.qml</file>
         <file>PostCoordTree.qml</file>
         <file>Section.qml</file>
+        <file>BNODetails.qml</file>
+        <file>ICDSwipe.qml</file>
     </qresource>
 </RCC>

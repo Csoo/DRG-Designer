@@ -1,5 +1,5 @@
-#ifndef DRGBROWSERMODEL_H
-#define DRGBROWSERMODEL_H
+#ifndef TreeModel_H
+#define TreeModel_H
 
 #include <QAbstractItemModel>
 #include "treeitem.h"
@@ -7,10 +7,15 @@
 #include "drg.h"
 #include "icd11.h"
 #include "enum.hpp"
+#include "repository.h"
+#include <QThread>
+
 #include <QSqlQuery>
 #include "../icd-project/backendDatabase/database.h"
 
-class DRGBrowserModel : public QAbstractItemModel
+class TreeItem;
+
+class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(QString dbError READ getDbError())
@@ -22,7 +27,8 @@ public:
         CodeRole,
         TitleRole
     };
-    explicit DRGBrowserModel(QObject *parent = nullptr);
+    explicit TreeModel(Repository *db, QThread *dbThread, QObject *parent = nullptr);
+    ~TreeModel();
 
     TreeItem *getItem(const QModelIndex &index) const;
     // Header:
@@ -58,7 +64,7 @@ public:
 
     QString getDbError() const;
 
-    void setDb(Database *value);
+    //void setDb(Database *value);
 
     Q_INVOKABLE unsigned int depth(const QModelIndex &parent) const;
     Q_INVOKABLE unsigned int getId(const QModelIndex &parent) const;
@@ -66,25 +72,44 @@ public:
     Q_INVOKABLE QString getTitle(const QModelIndex &parent) const;
     Q_INVOKABLE QString getCode(const QModelIndex &parent) const;
     Q_INVOKABLE bool isEmpty(const QModelIndex &parent) const;
-    Q_INVOKABLE bool connectToDatabase();
     Q_INVOKABLE bool isParent(const QModelIndex &parent, const QModelIndex &child) const;
     Q_INVOKABLE void loadIcd(unsigned int id, const QModelIndex &parent);
     Q_INVOKABLE void loadDrgEntities(int drgId);
     Q_INVOKABLE QVector<QModelIndex> getItemIndexes(const QModelIndex &index) const;
     Q_INVOKABLE void setDrgAttributes(const QModelIndex &chapterIndex);
     Q_INVOKABLE void loadPostCoord(unsigned int id, int type);
-    Q_INVOKABLE void loadChildren(unsigned int id, int type, const QModelIndex &parent);
+    Q_INVOKABLE void loadChildren(const QModelIndex &parent);
     Q_INVOKABLE bool isSelected(const QModelIndex &item);
     Q_INVOKABLE void setSelectedIndexes(const QModelIndexList &value);
+    Q_INVOKABLE bool isApproved(const QModelIndex &item);
+    Q_INVOKABLE QString getTitleOfBaseItem(int idx);
+    Q_INVOKABLE QModelIndex getIndexOfBaseItem(int idx);
 
 private:
 
-    Database *db;
+    //Database *db;
+    Repository *db1;
+    QThread *dbThread;
     QString dbError;
 
     TreeItem *rootItem;
     QModelIndexList selectedIndexes;
     QHash<int, QByteArray> m_roleNameMapping;
+
+public slots:
+    void drgBrowserResult(TreeItem *root);
+    void drgChapterResult(int chapterId, const QList<DRG*> &drgList);
+    void icdEntityResult(const QModelIndex &icdIndex , const ICD11 &icd);
+    void postCoordResult(int numberOfAxis, ICD11 *root);
+    void loadChildrenResult(const QList<ICD11*> &icdList, const QModelIndex &parent);
+
+signals:
+    void loadDrgBrowser(int drgId);
+    void loadChapterDrg(int chapterId);
+    void loadIcdEntity(int icdId, int conceptType);
+    void loadPostCoordTree(int icdId, int conceptType);
+    void loadItemChildren(unsigned int id, int type, const QModelIndex &parent);
+    void postCoordReady(int numberOfAxis);
 };
 
 #endif

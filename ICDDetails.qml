@@ -5,12 +5,17 @@ import "./NordStyle"
 
 Item {
     id: item1
-    property var index: undefined
 
+    property var modelIndex: null
     signal icd11Selected(var index)
+    signal changeICD()
 
-    onIndexChanged: {
-        postCoordModel.loadPostCoord(icd.id, 0)
+    function loadPostCoordinations() {
+        if (icd.conceptType != -1) {
+            postCoordBusy.running = true
+            qmlManager.stopConnection(Type.PAUSE)
+            postCoordModel.loadPostCoord(icd.id, icd.conceptType)
+        }
     }
 
     Section {
@@ -23,6 +28,18 @@ Item {
         anchors.bottomMargin: 70
         anchors.topMargin: 60
         width: 350
+        Label {
+            id: noPostCoord
+            anchors{
+                fill: parent
+                topMargin: 60
+                leftMargin: 14
+                rightMargin: 14
+            }
+            visible: false
+            wrapMode: TextInput.WordWrap
+            text: qsTr("Nem tásítható utó-koordináció a választott ICD-11 entitáshoz.")
+        }
         PostCoordTree {
             id: postCoordTree
             anchors{
@@ -30,25 +47,53 @@ Item {
                 topMargin: 60
                 leftMargin: 14
             }
-            Component.onCompleted: {
-               // postCoordModel
-            }
             onClicked: {
                 if (postCoordModel.getType(index) === Type.AXIS) {
                     icd11Selected(index)
                 }
             }
             onPostCoordSelectionChanged: {
-                fullCode.text = searchBar.currentValue
-                for (var i = 0; i < selectedIndexes.length; i++) {
-                    var code = postCoordModel.getCode(selectedIndexes[i])
-                    fullCode.text += (code.substr(0,1) === 'X' ? "&" : "/") + code
+            }
+            onPostCoordUpdated: {
+                fullCode.text = icd.getFullCode()
+            }
+            BusyIndicator {
+                id: postCoordBusy
+                anchors.fill: parent
+                anchors.margins: 120
+                running: false
+            }
+            Connections {
+                target: postCoordModel
+                function onPostCoordReady(numberOfAxis) {
+                    postCoordBusy.running = false
+                    icd.loadDetails()
+                    fullCode.text = icd.getFullCode()
+                    noPostCoord.visible = numberOfAxis === 0
+                    qmlManager.stopConnection(Type.CONTINUE)
+                }
+                function onLoadPostCoordTree() {
+                    postCoordBusy.running = true
                 }
             }
         }
     }
+
+    Button {
+        id: approveButton
+        anchors.top: postCoordSection.bottom
+        anchors.topMargin: 6
+        anchors.right: postCoordSection.right
+        text: qsTr("Mentés")
+        highlighted: true
+        onClicked: {
+            if (!postCoordModel.isApproved(modelIndex))
+                icd.approveICD(itemIndex)
+        }
+    }
+
     Section {
-        id: item2
+        id: icd11Details
         title: qsTr("ICD11")
         anchors.right: postCoordSection.left
         anchors.bottom: parent.bottom
@@ -57,109 +102,85 @@ Item {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.topMargin: 60
-        ComboBox {
-            Component.onCompleted: {
-                listModel.clear()
-            }
-            id: searchBar
+        anchors.bottomMargin: 14
+        Column {
+            id: details
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
             anchors{
-                top: parent.top
-                left: parent.left
                 topMargin: 60
                 leftMargin: 14
+                rightMargin: 14
             }
-            model: listModel
-            width: 350
-            height: 28
-            y: 50
-            displayText: "BNO-11 keresés"
-            editable: true
-            textRole: "title"
-            valueRole: "id"
-            popup.y: searchBar.height
-            onEditTextChanged: {
-//                if (listModel.rowCount() > 0)
-//                    popup.open()
+            spacing: 15
+            Label {
+                id: code
+                width: parent.width
+                text: icd.code
             }
-            onAccepted: {
-                listModel.loadIcd11(searchBar.editText)
+            Label {
+                id: title
+                width: parent.width
+                text: icd.title
+                wrapMode: TextInput.WordWrap
             }
-
-            onCurrentValueChanged: {
-                //item1.icd11Selected(currentValue)
-                fullCode.text = currentValue
-                postCoordModel.loadPostCoord(currentValue, 0)
+            Label {
+                id: description
+                width: parent.width
+                text: icd.description
+                wrapMode: TextInput.WordWrap
             }
-
-            indicator: Rectangle {
-                x: searchBar.width - width;
-                y: (searchBar.availableHeight - height) / 2;
-                width: searchBar.height; height: searchBar.height; color: "red" }
-            delegate: ItemDelegate {
-                hoverEnabled: true
-                height: searchBar.height
-                width: searchBar.width
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: parent.highlighted ? Nord.accent : Nord.night
-                }
-                contentItem: Text {
-                    text: title + " - " + code
-                    verticalAlignment: Text.AlignVCenter
-                    color: Nord.frost
-                    font: searchBar.font
-                }
-
-                highlighted: searchBar.highlightedIndex === index
-                MouseArea {
-                    id: mouse
-                    hoverEnabled: true
-                    anchors.fill: parent
-                    width: searchBar.width
-                    onClicked: {
-                        searchBar.currentIndex = index
-                        searchBar.popup.close()
+        }
+        Column {
+            id: postCoords
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: details.bottom
+            anchors{
+                topMargin: 20
+                leftMargin: 14
+                rightMargin: 14
+            }
+            Repeater {
+                model: icd.postCoordCount
+                Item {
+                    height: 20
+                    width: icd11Details.width
+                    Label {
+                        id: postCode
+                        width: 80
+                        text: icd.getPostCode(index)
+                    }
+                    Label {
+                        id: postTitle
+                        anchors.left: postCode.right
+                        width: parent.width
+                        text: icd.getPostTitle(index)
+                        wrapMode: TextInput.WordWrap
                     }
                 }
-             }
+            }
         }
-
         Label {
             id: fullCode
-            anchors{
-                top: searchBar.bottom
-                left: parent.left
-                topMargin: 40
-                leftMargin: 14
-            }
-            x: 0
-            y: 34
-            width: 215
-            height: 27
-            text: "code"
+            anchors.top: postCoords.bottom
+            anchors.topMargin: 20
+            anchors.left: parent.left
+            anchors.leftMargin: 14
+            width: code.width
+            text: ""
+            wrapMode: TextInput.WordWrap
         }
-//        TextField {
-//            id: icdSearch
-//            width: 150
-//            onEditingFinished: {
-//                listModel.loadIcd11(text)
-//            }
-//        }
-//        ListView {
-//            anchors.left: parent.left
-//            anchors.top: icdSearch.bottom
-//            anchors.leftMargin: 0
-//            anchors.topMargin: 0
-//            height: 400
-//            model: listModel
-//            delegate: Rectangle {
-//                width: 240
-//                height: 30
-//                Text {
-//                    text: code + "  -   " + title
-//                }
-//            }
-//        }
+        Button {
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.margins: 20
+            onClicked: {
+                changeICD()
+            }
+            text: qsTr("ICD-11 változtatása")
+        }
     }
 }
 

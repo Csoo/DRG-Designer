@@ -19,7 +19,13 @@ class Type : public QObject
             BNO10,
             AXIS
         };
-        Q_ENUMS(CodeType)
+        enum State {
+            CONTINUE = -1,
+            STOP,
+            PAUSE
+        };
+        Q_ENUM(CodeType)
+        Q_ENUM(State)
 };
 
 #endif // ENUM_HPP

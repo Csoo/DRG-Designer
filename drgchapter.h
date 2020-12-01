@@ -1,11 +1,10 @@
 #ifndef DRGCHAPTER_H
 #define DRGCHAPTER_H
 
-#include "treeitem.h"
 #include "enum.hpp"
+#include "treeitem.h"
 
-class DRGChapter : public TreeItem
-{
+class DRGChapter : public TreeItem {
 public:
     DRGChapter();
     DRGChapter(unsigned int id, const QString &code = "", const QString &title = "", TreeItem *parentItem = nullptr);

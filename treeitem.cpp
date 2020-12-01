@@ -1,4 +1,5 @@
 #include "treeitem.h"
+#include "treemodel.h"
 #include <QStringList>
 
 TreeItem::TreeItem()
@@ -7,8 +8,8 @@ TreeItem::TreeItem()
 }
 
 TreeItem::TreeItem(int type, unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
-    type(type),
     id(id),
+    type(type),
     code(code),
     title(title),
     m_parentItem(parentItem)
@@ -102,7 +103,7 @@ QString TreeItem::getCode() const
 void TreeItem::setCode(const QString &value)
 {
     code = value;
-    propertiesChanged();
+    emit propertiesChanged();
 }
 
 void TreeItem::setParentItem(TreeItem *parentItem)
@@ -130,31 +131,63 @@ unsigned int TreeItem::getId() const
     return id;
 }
 
+void TreeItem::fetchFromModel(const QModelIndex &index)
+{
+    TreeItem *item = model->getItem(index);
+    id = item->getId();
+    type = item->getType();
+    code = item->getCode();
+    title = item->getTitle();
+    m_index = index;
+}
+
+void TreeItem::updateModel()
+{
+    TreeItem *item = model->getItem(m_index);
+    item->setId(id);
+    item->setType(type);
+    item->setCode(code);
+    item->setTitle(title);
+    emit propertiesChanged();
+}
+
 bool TreeItem::insertChildren(int row, int count)
 {
     if (row < 0 || row > m_childItems.size())
         return false;
 
     for (int row = 0; row < count; ++row) {
-        TreeItem *item = new TreeItem(0);
         switch (this->getType()) {
             case Type::DRG_CAPTER : {
+                TreeItem *item = new TreeItem(0,0,"CODE");
                 item->setType(Type::DRG);
+                item->setParentItem(this);
+                m_childItems.insert(row, item);
                 break;
             }
             case Type::DRG : {
-                //item->setType(Type::DRG_TYPE);
-                item->setType(Type::ICD11);
+                TreeItem *item = new TreeItem(0,0,"CODE");
+                item->setType(Type::DRG_TYPE);
+                //item->setType(Type::ICD11);
+                item->setParentItem(this);
+                m_childItems.insert(row, item);
                 break;
             }
             case Type::DRG_TYPE : {
+                TreeItem *item = new TreeItem(0,0,"CODE");
                 item->setType(Type::ICD11);
+                item->setParentItem(this);
+                m_childItems.insert(row, item);
                 break;
             }
-            default: return false;
+            default: {
+                ICD11 *item = new ICD11(0, 0, "CODE", "TITLE", 0, this);
+                item->setType(Type::ICD11);
+                item->setParentItem(this);
+                m_childItems.insert(row, item);
+                break;
+            }
         }
-        item->setParentItem(this);
-        m_childItems.insert(row, item);
     }
 
     return true;
@@ -163,7 +196,7 @@ bool TreeItem::insertChildren(int row, int count)
 void TreeItem::setId(unsigned int value)
 {
     id = value;
-    propertiesChanged();
+    emit propertiesChanged();
 }
 
 int TreeItem::getType() const
@@ -175,4 +208,20 @@ void TreeItem::setType(int value)
 {
     type = value;
     propertiesChanged();
+}
+
+void TreeItem::setModel(TreeModel *value)
+{
+    model = value;
+}
+
+QString TreeItem::getDescription() const
+{
+    return description;
+}
+
+void TreeItem::setDescription(const QString &value)
+{
+    description = value;
+    emit propertiesChanged();
 }

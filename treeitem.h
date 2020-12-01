@@ -4,15 +4,19 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
+#include <QModelIndex>
 #include "enum.hpp"
+
+class TreeModel;
 
 class TreeItem : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString title READ getTitle NOTIFY propertiesChanged)
-    Q_PROPERTY(QString code READ getCode NOTIFY propertiesChanged)
-    Q_PROPERTY(unsigned int id READ getId NOTIFY propertiesChanged)
+    Q_PROPERTY(QString title READ getTitle WRITE setTitle NOTIFY propertiesChanged)
+    Q_PROPERTY(QString code READ getCode WRITE setCode NOTIFY propertiesChanged)
+    Q_PROPERTY(QString description READ getDescription WRITE setDescription NOTIFY propertiesChanged)
+    Q_PROPERTY(unsigned int id READ getId WRITE setId NOTIFY propertiesChanged)
     Q_PROPERTY(int type READ getType NOTIFY propertiesChanged)
 public:
     TreeItem();
@@ -40,22 +44,34 @@ public:
     int findChildrenById(unsigned int id) const;
 
     Q_INVOKABLE unsigned int getId() const;
+    Q_INVOKABLE virtual void fetchFromModel(const QModelIndex &index);
+    Q_INVOKABLE virtual void updateModel();
 
     bool insertChildren(int row, int count);
     void setId(unsigned int value);
 
     int getType() const;
     void setType(int value);
+    void setModel(TreeModel *value);
+
+    QString getDescription() const;
+    void setDescription(const QString &value);
+
 signals:
     void propertiesChanged();
 
 protected:
-    int type;
     unsigned int id;
+    int type;
     QString code;
     QString title;
+    QString description;
+
     QList<TreeItem*> m_childItems;
     TreeItem *m_parentItem;
+    TreeModel *model;
+
+    QModelIndex m_index;
 };
 
 #endif // TREEITEM_H

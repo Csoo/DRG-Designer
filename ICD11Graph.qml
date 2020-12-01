@@ -6,7 +6,7 @@ import MyGraph 1.0
 import "./NordStyle"
 
 Item {
-    id: item1
+    id: graphContainer
     anchors.fill: parent
     function addNode(title) {
         graph.clearGraph()
@@ -25,11 +25,21 @@ Item {
         var parent
         for (var i = 0; i < idxArray.length; i++) {
             nodeArray.push(graph.insertNode())
-            nodeArray[i].label = treeModel.getCode(idxArray[i])
+            nodeArray[i].item.height = 90
+            nodeArray[i].label = postCoordModel.getCode(idxArray[i]) + "\n" + postCoordModel.getTitle(idxArray[i])
+            if (postCoordModel.getTitle(idxArray[i]) === "") {
+                nodeArray[i].item.selectable = false
+                nodeArray[i].item.height = 50
+                nodeArray[i].label = postCoordModel.getCode(idxArray[i])
+                if (postCoordModel.getCode(idxArray[i]) === "") {
+                    nodeArray[i].item.height = 90
+                    nodeArray[i].label = qsTr("További elemek betöltése")
+                }
+            }
             nodeArray[i].item.x = xPos
             nodeArray[i].item.y = yPos
             for (var j = 0; j < i; j++) {
-                if (treeModel.isParent(idxArray[j], idxArray[i])) {
+                if (postCoordModel.isParent(idxArray[j], idxArray[i])) {
                     parent = nodeArray[j]
                     var edge = graph.insertEdge(nodeArray[j], nodeArray[i])
                 }
@@ -46,8 +56,8 @@ Item {
         anchors.fill: parent
         navigable: true
 
-        resizeHandlerColor: Nord.softBackground
-        resizeHandlerSize: "5x5"
+        resizeHandlerColor: Nord.frost
+        resizeHandlerSize: "10x10"
         gridThickColor: Nord.softBackground
         grid: Qan.LineGrid{
           gridScale: 50
@@ -69,15 +79,12 @@ Item {
                 defaultNodeStyle.backOpacity = 1
                 defaultNodeStyle.backRadius = 20
                 defaultNodeStyle.borderColor = Nord.frost
-                var n1 = graph.insertNode()
-                var n2 = graph.insertNode()
-                n1.item.x = 100
-                n1.item.y = 200
-                n1.item.x = 100
-                n1.item.y = 300
-                n1.label = "Hello World"
-                n2.label = "Igen"
-                var e1 = graph.insertEdge(n1, n2)
+            }
+            onNodeClicked: {
+                if (node.item.label === "További elemek betöltése") {
+                    newNode = graph.insertNode()
+                    newNode.item.label = "Új elem"
+                }
             }
         }
     }
@@ -90,9 +97,11 @@ Item {
         anchors.top: parent.top
         anchors.rightMargin: 40
         anchors.topMargin: 40
-        textRole: "title"
-        valueRole: "id"
-        model: listModel
+        model: axisModel
+
+        onActivated: {
+            graphContainer.addNodes(postCoordModel.getItemIndexes(postCoordModel.getIndexOfBaseItem(currentIndex)))
+        }
         delegate: ItemDelegate {
             hoverEnabled: true
             height: axisDropDown.height
@@ -102,7 +111,7 @@ Item {
                 color: parent.highlighted ? Nord.accent : Nord.night
             }
             contentItem: Text {
-                text: title
+                text: text
                 verticalAlignment: Text.AlignVCenter
                 color: Nord.frost
                 font: axisDropDown.font
@@ -111,6 +120,19 @@ Item {
             highlighted: axisDropDown.highlightedIndex == index
         }
     }
+    ListModel {
+        id: axisModel
+    }
+    Connections {
+        target: postCoordModel
+        function onPostCoordReady(numberOfAxis) {
+            axisModel.clear()
+            for (var i = 0; i < numberOfAxis; i++) {
+                axisModel.append({ "text" : postCoordModel.getTitleOfBaseItem(i) })
+            }
+        }
+    }
+
 }
 
 

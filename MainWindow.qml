@@ -2,6 +2,7 @@ import QtQuick 2.3
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.4
 import QtQuick.Controls.Universal 2.3
+import TypeEnum 1.0
 import "./NordStyle"
 
 Item {
@@ -42,6 +43,7 @@ Item {
                     target: detailsLoader.item
                     ignoreUnknownSignals: true
                     function onIcd11Selected(index){ graph.addNodes(postCoordModel.getItemIndexes(index)) }
+                    function onGoToICDDetails() { bno11Button.enabled = true }
                 }
             }
             Item {
@@ -145,22 +147,45 @@ Item {
         onDrgClicked: {
             bno11Button.enabled = false
             drg.setAttributesFromModel(index)
+            detailsLoader.sourceComponent = undefined
             detailsLoader.source = "DRGDetails.qml"
             tabBar.currentIndex = 0
             //graph.addNodes(treeModel.getItemIndexes(index))
         }
         onChapterClicked: {
             bno11Button.enabled = false
+            detailsLoader.sourceComponent = undefined
             detailsLoader.source = "Editor.qml"
             tabBar.currentIndex = 0
 
         }
         onIcdClicked: {
-            console.log(treeModel.getCode(index), treeModel.getId(index), treeModel.getTitle(index))
-            icd.setAttributesFromModel(index)
-            bno11Button.enabled = true
-            detailsLoader.setSource("ICDDetails.qml", { "index": index })
-            //graph.addNode(icd.getCode())
+            detailsLoader.sourceComponent = undefined
+            icd.fetchFromModel(index)
+            detailsLoader.setSource("ICDSwipe.qml", { "itemIndex": index })
+            console.log(icd.getCode())
+//            if (icd.isApproved) {
+//                bno11Button.enabled = true
+//                detailsLoader.setSource("ICDDetails.qml", { "index": index })
+//            } else {
+//                detailsLoader.source = "BNODetails.qml"
+//            }
+            bno11Button.enabled = false
+        }
+        BusyIndicator {
+            id: drgBrowserBusy
+            implicitHeight: 50
+            implicitWidth: 50
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            running: true
+            Connections {
+                target: qmlManager
+                function onDrgBrowserReady() {
+                    qmlManager.stopConnection(Type.CONTINUE)
+                    drgBrowserBusy.running = false
+                }
+            }
         }
     }
 

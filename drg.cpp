@@ -1,4 +1,5 @@
 #include "drg.h"
+#include "treemodel.h"
 
 QString DRG::getSimpleTitle() const
 {
@@ -40,12 +41,6 @@ DRG::DRG()
 
 DRG::DRG(unsigned int id, const QString &code, const QString &title, TreeItem *parentItem):
     TreeItem(Type::DRG, id, code, title, parentItem)
-{
-
-}
-
-DRG::DRG(DRGBrowserModel *model):
-    model(model)
 {
 
 }
