@@ -22,9 +22,9 @@ SOURCES += \
         qmlmanager.cpp \
         repository.cpp \
         selection.cpp \
+        session.cpp \
         treeitem.cpp \
-        treemodel.cpp \
-        user.cpp
+        treemodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -54,10 +54,14 @@ HEADERS += \
     qmlmanager.h \
     repository.h \
     selection.h \
+    session.h \
     treeitem.h \
-    treemodel.h \
-    user.h
+    treemodel.h
 
 SUBDIRS += \
 
-DISTFILES +=
+DISTFILES += \
+    diagram.qmodel
+
+STATECHARTS += \
+    state.scxml

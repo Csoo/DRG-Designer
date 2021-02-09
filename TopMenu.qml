@@ -35,9 +35,9 @@ Item{
 
         Menu {
             id: fileMenu
-            title: qsTr("File")
-            Action {text: qsTr("New") }
-            Action {text: qsTr("Open") }
+            title: qsTr("Fájl")
+            Action {text: qsTr("Új üres HBCs") }
+            Action {text: qsTr("Mások HBCs betöltése") }
             
             delegate: MenuItem {
                 id: fileMenuItem
@@ -71,9 +71,8 @@ Item{
 
         Menu {
             id: editMenu
-            title: qsTr("Edit")
-            Action { text: qsTr("Add") }
-            Action { text: qsTr("Settings") }
+            title: qsTr("Szerkesztés")
+            Action { text: qsTr("Elem eltávolítsa") }
             delegate: MenuItem {
                 id: editMenuItem
                 implicitWidth: 200
@@ -100,6 +99,40 @@ Item{
                 color: Nord.night
                 implicitWidth: 170
                 implicitHeight: 40 * editMenu.count
+                radius: 2
+            }
+        }
+        Menu {
+            id: helpMenu
+            title: qsTr("Súgó")
+            Action { text: qsTr("Használat") }
+            Action { text: qsTr("Qt rendszerről") }
+            delegate: MenuItem {
+                id: helpMenuItem
+                implicitWidth: 200
+                implicitHeight: 40
+
+                contentItem: Text {
+                    text: helpMenuItem.text
+                    font: helpMenuItem.font
+                    opacity: enabled ? 1.0 : 0.3
+                    color: helpMenuItem.highlighted ? "#ffffff" : Nord.frost
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+
+                background: Rectangle {
+                    implicitWidth: 170
+                    implicitHeight: 40
+                    opacity: enabled ? 1 : 0.3
+                    color: helpMenuItem.highlighted ? Nord.highlight : "transparent"
+                }
+            }
+            background: Rectangle {
+                color: Nord.night
+                implicitWidth: 170
+                implicitHeight: 40 * helpMenu.count
                 radius: 2
             }
         }

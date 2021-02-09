@@ -8,6 +8,7 @@
 #include "treeitem.h"
 #include "icd11.h"
 #include "drg.h"
+#include "session.h"
 #include "enum.hpp"
 #include "repository.h"
 #include "../icd-project/backendDatabase/database.h"
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
     QMLManager qml(dbThread);
     //Database *db = new Database;
     Repository db1(&qml);
+    Session session(&db1);
     db1.moveToThread(dbThread);
     dbThread->start();
 
@@ -58,6 +60,7 @@ int main(int argc, char *argv[])
     engine.addPluginPath(QStringLiteral("QuickQanava/src"));
     QuickQanava::initialize(&engine);
 
+    engine.rootContext()->setContextProperty("session", &session);
     engine.rootContext()->setContextProperty("listModel", &listModel);
     engine.rootContext()->setContextProperty("treeModel", &treeModel);
     engine.rootContext()->setContextProperty("postCoordModel", &postCoordModel);
@@ -67,7 +70,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<Type>("TypeEnum", 1, 0, "Type");
     qmlRegisterType<qan::Graph>("MyGraph",1,0,"CustomGraph");
 
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    const QUrl url(QStringLiteral("qrc:/app.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)

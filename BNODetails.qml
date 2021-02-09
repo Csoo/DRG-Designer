@@ -75,6 +75,19 @@ Item {
             anchors.topMargin: 20
             model: listModel
             currentIndex: -1
+            BusyIndicator {
+                id: loadIndicator
+                anchors.fill: parent
+                anchors.margins: 150
+                running: false
+                Connections {
+                    target: qmlManager
+                    function onSearchReady() {
+                        loadIndicator.running = false
+                        qmlManager.stopConnection(Type.CONTINUE)
+                    }
+                }
+            }
             ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
             }
@@ -129,21 +142,6 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
-
-            BusyIndicator {
-                id: loadIndicator
-                anchors.fill: parent
-                anchors.margins: 150
-                running: false
-                Connections {
-                    target: qmlManager
-                    function onSearchReady() {
-                        loadIndicator.running = false
-                        qmlManager.stopConnection(Type.CONTINUE)
-                    }
-                }
-            }
-
         }
     }
 
@@ -169,6 +167,7 @@ Item {
             anchors.fill: parent
             anchors.margins: 20
             anchors.topMargin: 50
+            wrapMode: TextInput.WordWrap
             text: qsTr("Nincs ajánlás a jelenlegi kódhoz.")
             Component.onCompleted: {
                 bno.loadSuggestion()
@@ -180,7 +179,7 @@ Item {
         function onWhoSuggestionReady(noRecommendation) {
             qmlManager.stopConnection(Type.CONTINUE)
             if (!noRecommendation)
-                suggestion.text = icd.getFullCode()
+                suggestion.text = icd.getFullCode() + " - " + icd.title
             selectIcdButton.noRecommendation = noRecommendation
         }
     }

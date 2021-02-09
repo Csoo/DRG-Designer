@@ -21,9 +21,15 @@ Item {
         currentIndex: 0
         interactive: false
 
+        onCurrentIndexChanged: {
+            if (currentIndex === 1) {
+                goToICDDetails()
+            }
+        }
+
         Component.onCompleted: {
             currentIndex = icd.isApproved ? 1 : 0
-            if (currentIndex == 1) {
+            if (currentIndex === 1) {
                 goToICDDetails()
             }
         }
@@ -39,6 +45,7 @@ Item {
             modelIndex: itemIndex
             onChangeICD: {
                 swipeView.currentIndex = 0
+                icd.clearPostCoord()
             }
             Component.onDestruction: {
                 icd.clearPostCoord()

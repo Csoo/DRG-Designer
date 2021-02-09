@@ -133,7 +133,7 @@ Item {
                     Label {
                         id: label
                         height: 35
-                        text: qsTr("Laikus megnevezés ")
+                        text: qsTr("Laikus megnevezés")
                         anchors.left: parent.left
                         anchors.right: parent.right
                         verticalAlignment: Text.AlignVCenter
@@ -146,7 +146,7 @@ Item {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         height: 35
-                        text: qsTr("Súly: ")
+                        text: qsTr("Súly")
                         verticalAlignment: Text.AlignVCenter
                         anchors.rightMargin: 0
                     }
@@ -177,7 +177,7 @@ Item {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         height: 35
-                        text: qsTr("Normáli ellátási napok száma")
+                        text: qsTr("Normális ellátási napok száma")
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         anchors.rightMargin: 0

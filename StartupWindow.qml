@@ -66,7 +66,7 @@ Item {
 
     Rectangle {
         id: emptyError
-        color: Nord.ok
+        color: mainItem.state == "authSuccess" ? Nord.ok : Nord.error
         radius: 5
         border.width: 0
         anchors.verticalCenter: userName.verticalCenter
@@ -79,7 +79,7 @@ Item {
             id: emptyErrorMsg
             anchors.fill: parent
             maximumLineCount: 2
-            text: mainItem.state == "authSuccess" ? qsTr("Sikeres azonosítás") : qsTr("Kitöltendő mezők")
+            text: mainItem.state == "authSuccess" ? qsTr("Sikeres azonosítás") : qsTr("Sikertelen azonosítás")
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
@@ -117,8 +117,40 @@ Item {
         text: qsTr("Új hierarchia létrehozása")
         anchors.right: parent.right
         onClicked: {
-            goToMain(0)
+            newDrg.open()
             loadDrgConnection.stop = true
+        }
+    }
+
+    Popup {
+        id: newDrg
+        height: 80
+        anchors.centerIn: parent
+        contentItem: Item {
+            id: name
+            anchors.fill: parent
+            Row {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 5
+                TextField {
+                    placeholderText: qsTr("Új HBCs rendszer neve")
+                }
+                Button {
+                    text: qsTr("Létrehozás")
+                    highlighted: true
+                    onClicked: {
+                        newDrg.close()
+                        goToMain(0)
+                    }
+                }
+                Button {
+                    text: qsTr("Vissza")
+                    onClicked: {
+                        newDrg.close()
+                    }
+                }
+            }
         }
     }
 
@@ -277,12 +309,38 @@ Item {
             if (pwField.text == "" && userField.text == "") mainItem.state = "empty"
             else if (pwField.text == "") mainItem.state = "emptyPw"
             else if (userField.text == "") mainItem.state = "emptyUser"
-            else mainItem.state = "authSuccess"
+            else {
+                session.authenticate(userField.text, pwField.text)
+                loginBusy.running = true
+            }
         }
         onClicked: {
             activate()
         }
+    }
 
+    BusyIndicator {
+        id: loginBusy
+        anchors.right: userName.left
+        anchors.top: userName.top
+        anchors.margins: 50
+        anchors.topMargin: 50
+        height: 50
+        running: false
+        Connections {
+            target: session
+            function onLoginReady(userId) {
+                loginBusy.running = false
+                console.log(userId)
+                if (userId === -1) {
+                    mainItem.state = "authFailed"
+                } else {
+                    mainItem.state = "authSuccess"
+                    userField.enabled = false
+                    password.enabled = false
+                }
+            }
+        }
     }
 
     transitions: [
@@ -386,8 +444,19 @@ Item {
         State {
             name: "authFailed"
             PropertyChanges {
-                target: error
-                width: 180
+                target: emptyError
+                visible: true
+                width: 150
+            }
+            PropertyChanges {
+                target: pwError
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: emptyError
+                visible: false
+                width: 0
             }
         },
         State {

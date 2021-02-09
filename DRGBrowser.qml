@@ -113,13 +113,15 @@ TreeView {
             contextMenu.isChapter = false
             contextMenu.isType = false
             var index = parent.indexAt(mouse.x, mouse.y)
+            chapterEdit.index = null
             if (index.valid) {
-                    switch (treeModel.getType(index)){
-                    case Type.DRG_CAPTER : contextMenu.isChapter = true; break;
-                    case Type.DRG_TYPE : contextMenu.isType = true; break;
-                }
+                    if (treeModel.getType(index) === Type.DRG_CAPTER) {
+                        contextMenu.isChapter = true;
+                        chapterEdit.index = index;
+                    } else
+                        contextMenu.isType = true;
             }
-            contextMenu.popup()
+            contextMenu.popup()    
         }
     }
 
@@ -127,13 +129,47 @@ TreeView {
         id: codeHeader
         role: "code"
         title: "Code"
-        width: 100
+        width: 110
     }
     TableViewColumn {
         id: titleHeader
         role: "title"
         title: "Title"
         width: parent.width - codeHeader.width
+    }
+
+    QQC2.Popup {
+        id: chapterEdit
+        property var index: null
+        anchors.centerIn: parent
+        width: 210
+        Column {
+            anchors.fill: parent
+            anchors.margins: 20
+            spacing: 10
+            QQC2.TextField {
+                id: code
+                width: 150
+                selectByMouse: true
+                placeholderText: chapterEdit.index === null ? qsTr("Kód") : ""
+                text: chapterEdit.index !== null ? treeModel.getCode(chapterEdit.index) : ""
+            }
+            QQC2.TextField {
+                width: 150
+                id: title
+                selectByMouse: true
+                placeholderText: chapterEdit.index === null ? qsTr("Megnevezés") : ""
+                text: chapterEdit.index !== null ? treeModel.getTitle(chapterEdit.index) : ""
+            }
+            QQC2.Button {
+                text: "Ok"
+                highlighted: true
+                onClicked: {
+                    chapterEdit.index === null ? treeModel.updateModelItem(code.text, title.text) : treeModel.updateModelItem(code.text, title.text, chapterEdit.index)
+                    chapterEdit.close()
+                }
+            }
+        }
     }
 
     Item {
@@ -143,7 +179,8 @@ TreeView {
         property bool isType: false
         QQC2.Action { text: "Új HBCs hozzáadasa"; enabled: contextMenu.isChapter }
         QQC2.Action { text: "Új ICD11 hozzáadasa"; enabled: contextMenu.isType }
-        QQC2.Action { text: "Új főcsoport hozzáadasa" }
+        QQC2.Action { text: "Új főcsoport hozzáadasa"; onTriggered: chapterEdit.open() }
+        QQC2.Action { text: "Főcsoport átnevezése"; enabled: contextMenu.isChapter; onTriggered: chapterEdit.open() }
 
         delegate: QQC2.MenuItem {
             id: menuItem

@@ -44,7 +44,12 @@ void ICD11::recommendationResult(bool noRecommendation, ICD11 *rec)
 
 void ICD11::detailsResult(ICD11 *icd)
 {
-    this->setDescription(icd->getDescription());
+    if (this->getCode().endsWith("Z"))
+        this->setDescription(tr("'Nem meghatározott' fennmaradó kategória."));
+    else if (this->getCode().endsWith("Y"))
+        this->setDescription(tr("'Egyéb' fennmaradó kategória."));
+    else
+        this->setDescription(icd->getDescription());
     delete icd;
 }
 

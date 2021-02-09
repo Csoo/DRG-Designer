@@ -98,6 +98,7 @@ Item {
         anchors.rightMargin: 40
         anchors.topMargin: 40
         model: axisModel
+        textRole: "text"
 
         onActivated: {
             graphContainer.addNodes(postCoordModel.getItemIndexes(postCoordModel.getIndexOfBaseItem(currentIndex)))
@@ -122,6 +123,9 @@ Item {
     }
     ListModel {
         id: axisModel
+        ListElement {
+            text: qsTr("Válasszon tengelyt..")
+        }
     }
     Connections {
         target: postCoordModel

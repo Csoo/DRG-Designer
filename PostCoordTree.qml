@@ -80,7 +80,6 @@ TreeView {
     }
 
     onExpanded: {
-        console.log(index)
         if (postCoordModel.isEmpty(index)) {
             postCoordModel.loadChildren(index)
         }
@@ -88,7 +87,7 @@ TreeView {
 
     TableViewColumn {
         role: "code"
-        width: 100
+        width: 110
     }
     TableViewColumn {
         role: "title"

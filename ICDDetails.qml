@@ -20,7 +20,7 @@ Item {
 
     Section {
         id: postCoordSection
-        title: qsTr("Utó-koordinációk")
+        title: qsTr("Utókoordinációk")
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.top: parent.top
@@ -70,6 +70,7 @@ Item {
                     icd.loadDetails()
                     fullCode.text = icd.getFullCode()
                     noPostCoord.visible = numberOfAxis === 0
+                    postCoordTree.visible = numberOfAxis !== 0
                     qmlManager.stopConnection(Type.CONTINUE)
                 }
                 function onLoadPostCoordTree() {
@@ -87,8 +88,7 @@ Item {
         text: qsTr("Mentés")
         highlighted: true
         onClicked: {
-            if (!postCoordModel.isApproved(modelIndex))
-                icd.approveICD(itemIndex)
+            icd.approveICD(itemIndex)
         }
     }
 
@@ -145,7 +145,7 @@ Item {
             Repeater {
                 model: icd.postCoordCount
                 Item {
-                    height: 20
+                    height: postCode.height + postTitle.height
                     width: icd11Details.width
                     Label {
                         id: postCode
@@ -155,7 +155,7 @@ Item {
                     Label {
                         id: postTitle
                         anchors.left: postCode.right
-                        width: parent.width
+                        width: parent.width - postCode.width - 10
                         text: icd.getPostTitle(index)
                         wrapMode: TextInput.WordWrap
                     }

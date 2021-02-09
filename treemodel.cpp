@@ -437,6 +437,21 @@ QModelIndex TreeModel::getIndexOfBaseItem(int idx)
     return createIndex(rootItem->getChildItems()[idx]->row(), 0, rootItem->getChildItems()[idx]);
 }
 
+void TreeModel::updateModelItem(const QString &title, const QString &code, const QModelIndex &index)
+{
+    TreeItem *newItem = new TreeItem(Type::DRG_CAPTER, 0, code, title);
+    if (index != QModelIndex()) {
+        newItem = this->getItem(index);
+        newItem->setCode(code);
+        newItem->setTitle(title);
+        emit dataChanged(index, index);
+    } else {
+        beginInsertRows(index, 0, 0);
+        rootItem->appendChild(newItem);
+        endInsertRows();
+    }
+}
+
 //void TreeModel::approveICD(const QModelIndex &item, const ICD11 &icd)
 //{
     //    ICD11 *icdCurrnet = dynamic_cast<ICD11*>(this->getItem(item));

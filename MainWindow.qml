@@ -150,7 +150,6 @@ Item {
             detailsLoader.sourceComponent = undefined
             detailsLoader.source = "DRGDetails.qml"
             tabBar.currentIndex = 0
-            //graph.addNodes(treeModel.getItemIndexes(index))
         }
         onChapterClicked: {
             bno11Button.enabled = false
@@ -160,17 +159,11 @@ Item {
 
         }
         onIcdClicked: {
+            bno11Button.enabled = false
             detailsLoader.sourceComponent = undefined
             icd.fetchFromModel(index)
             detailsLoader.setSource("ICDSwipe.qml", { "itemIndex": index })
             console.log(icd.getCode())
-//            if (icd.isApproved) {
-//                bno11Button.enabled = true
-//                detailsLoader.setSource("ICDDetails.qml", { "index": index })
-//            } else {
-//                detailsLoader.source = "BNODetails.qml"
-//            }
-            bno11Button.enabled = false
         }
         BusyIndicator {
             id: drgBrowserBusy
@@ -178,7 +171,7 @@ Item {
             implicitWidth: 50
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            running: true
+            running: drgId != 0
             Connections {
                 target: qmlManager
                 function onDrgBrowserReady() {

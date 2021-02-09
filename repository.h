@@ -50,6 +50,8 @@ public slots:
     void loadRecommendation(int id);
     void loadICDDetails(int icdId, int conceptType);
     void loadChildren(unsigned int id, int type, const QModelIndex &parent);
+    void login(const QString &userName, const QString &password);
+    void logout(int userId);
 
 signals:
     void startConnectToDatabase(Database *db);
@@ -65,6 +67,7 @@ signals:
     void searchIcd11Ready(const QList<Item> &);
     void recommendationReady(bool noRecommendation, ICD11 *recommendation);
     void loadChildrenReady(const QList<ICD11*>, const QModelIndex &parent);
+    void loginReady(int userId);
 };
 
 #endif // REPOSITORY_H

@@ -253,11 +253,12 @@ void Repository::loadRecommendation(int id)
 void Repository::loadICDDetails(int icdId, int conceptType)
 {
     ICD11 *icd = new ICD11();
-//    QSqlQuery query = m_db->listIcd11Linea(icdId, conceptType);
-//    while (query.next()) {
-//        icd->setDescription(query.value(1).toString());
-//    }
-    icd->setDescription("Occaecati eum sunt quia ipsam facere aut nobis laudantium. Inventore et amet tempora cumque molestiae culpa beatae laborum. Doloremque nisi nostrum quasi. Asperiores ratione occaecati enim omnis voluptatem fugit totam. Labore itaque sequi et. Hic est soluta quisquam quasi facilis consequuntur libero.");
+    qInfo() << "Request from database: load details for ICD-11:" << icdId << conceptType;
+    QSqlQuery query = m_db->listIcd11Linea(icdId, conceptType);
+    while (query.next()) {
+        icd->setDescription(query.value(17).toString());
+    }
+    //icd->setDescription("Occaecati eum sunt quia ipsam facere aut nobis laudantium. Inventore et amet tempora cumque molestiae culpa beatae laborum. Doloremque nisi nostrum quasi. Asperiores ratione occaecati enim omnis voluptatem fugit totam. Labore itaque sequi et. Hic est soluta quisquam quasi facilis consequuntur libero.");
     emit ICDDetailsReady(icd);
 }
 
@@ -276,4 +277,21 @@ void Repository::loadChildren(unsigned int id, int type, const QModelIndex &pare
         icdList.append(icd);
     }
     emit loadChildrenReady(icdList, parent);
+}
+
+void Repository::login(const QString &userName, const QString &password)
+{
+    qInfo() << "Login request, userName:" << userName;
+    int userId = m_db->login(userName, password);
+    if (userId != -1) {
+        m_db->loginLog(userId);
+    }
+
+    emit loginReady(userId);
+}
+
+void Repository::logout(int userId)
+{
+    m_db->logoutLog(userId);
+    qInfo() << "Logout user:" << userId;
 }

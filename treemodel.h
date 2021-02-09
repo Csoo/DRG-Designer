@@ -84,6 +84,7 @@ public:
     Q_INVOKABLE bool isApproved(const QModelIndex &item);
     Q_INVOKABLE QString getTitleOfBaseItem(int idx);
     Q_INVOKABLE QModelIndex getIndexOfBaseItem(int idx);
+    Q_INVOKABLE void updateModelItem(const QString &title, const QString &code, const QModelIndex &index = QModelIndex());
 
 private:
 

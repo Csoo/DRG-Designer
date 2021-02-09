@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" name="state" qt:editorversion="4.13.1" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" initial="State_1">
+    <qt:editorinfo initialGeometry="143.32;173.22;-20;-20;40;40"/>
+    <state id="State_1">
+        <qt:editorinfo scenegeometry="368.10;173.22;308.10;123.22;120;100" geometry="368.10;173.22;-60;-50;120;100"/>
+    </state>
+</scxml>
