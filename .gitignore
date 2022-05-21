@@ -1,6 +1,5 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
-
 *~
 *.autosave
 *.a
@@ -34,9 +33,11 @@ Thumbs.db
 *.rc
 /.qmake.cache
 /.qmake.stash
+/build
 
 # qtcreator generated files
 *.pro.user*
+*.pro*
 
 # xemacs temporary files
 *.flc
@@ -58,6 +59,9 @@ Thumbs.db
 *.opensdf
 *.vcxproj
 *vcxproj.*
+
+# Visual Studio Code
+/.vscode
 
 # MinGW generated files
 *.Debug
